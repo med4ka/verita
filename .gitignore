@@ -5,3 +5,5 @@ uploads/*
 !uploads/.gitkeep
 *.log
 .DS_Store
+_move.js
+tests/output/*.tmp

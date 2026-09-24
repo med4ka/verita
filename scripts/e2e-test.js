@@ -1,11 +1,12 @@
-// End-to-end test endpoints schema.md §3 — node e2e-test.js
+// End-to-end test endpoints docs/spec/schema.md §3 — node scripts/e2e-test.js
 const { spawn } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
+const ROOT = path.join(__dirname, '..');
 const BASE = 'http://127.0.0.1:3000';
 const WALLET = '0x1234567890abcdef1234567890abcdef12345678';
-const IMG = path.join(__dirname, 'test-clean.jpg');
+const IMG = path.join(ROOT, 'tests', 'fixtures', 'test-clean.jpg');
 const TX = '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef';
 
 const results = [];
@@ -29,7 +30,7 @@ async function waitHealth(ms = 15000) {
 
 async function main() {
   const server = spawn(process.execPath, ['src/index.js'], {
-    cwd: __dirname,
+    cwd: ROOT,
     stdio: ['ignore', 'pipe', 'pipe'],
   });
   let serverLog = '';
@@ -90,8 +91,9 @@ async function main() {
     const b6 = await r6.text();
     log('TEST 6: POST analyze tanpa storeName', `HTTP ${r6.status}\n${b6}`);
 
-    fs.writeFileSync(path.join(__dirname, 'curl-test-output.txt'), results.join('\n\n') + '\n', 'utf8');
-    console.log('\nALL TESTS DONE — saved curl-test-output.txt');
+    const outFile = path.join(ROOT, 'tests', 'output', 'curl-test-output.txt');
+    fs.writeFileSync(outFile, results.join('\n\n') + '\n', 'utf8');
+    console.log('\nALL TESTS DONE — saved tests/output/curl-test-output.txt');
   } finally {
     server.kill();
   }
