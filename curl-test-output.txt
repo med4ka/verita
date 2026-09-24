@@ -1,0 +1,26 @@
+=== HEALTH ===
+{"ok":true}
+
+=== TEST 1: POST /api/analyze-receipt ===
+HTTP 200
+{"receiptId":3,"imageHash":"0x955fbfbcbe434b979fcdbf4ad3b4242e93429ec48e994f47ccf4e5d6c30f2795","canonicalHash":"0x00cd032aced11dcf88a85b48e045d57f2d1509da295e511e306bf6a2ad1fc5c4","tamperScore":0,"verdict":"clean","onchainStatus":"pending"}
+
+=== TEST 2: GET /api/receipts?wallet= ===
+HTTP 200
+[{"receiptId":3,"storeName":"toko abc","amount":150000,"verdict":"clean","canonicalHash":"0x00cd032aced11dcf88a85b48e045d57f2d1509da295e511e306bf6a2ad1fc5c4","onchainStatus":"pending","txHash":null,"createdAt":"2026-09-23T07:04:36.300Z"}]
+
+=== TEST 3: GET /api/receipts/check-duplicate?hash= ===
+HTTP 200
+{"isClaimed":true,"claimant":"0x1234567890abcdef1234567890abcdef12345678","timestamp":1790147076}
+
+=== TEST 4: POST /api/receipts/:id/confirm-onchain ===
+HTTP 200
+{"ok":true}
+
+=== TEST 5: GET /api/receipts (verify registered) ===
+HTTP 200
+[{"receiptId":3,"storeName":"toko abc","amount":150000,"verdict":"clean","canonicalHash":"0x00cd032aced11dcf88a85b48e045d57f2d1509da295e511e306bf6a2ad1fc5c4","onchainStatus":"registered","txHash":"0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef","createdAt":"2026-09-23T07:04:36.300Z"}]
+
+=== TEST 6: POST analyze tanpa storeName ===
+HTTP 400
+{"error":"storeName is required"}
