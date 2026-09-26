@@ -44,20 +44,24 @@ Target users are **UMKM (small businesses)** and **campus organizations** that p
 
 ### Smart Contract
 
-**Testnet: BOT Chain Testnet (Bohr)**
+**Testnet** (BOT Chain Testnet / Bohr):
+- Address: `0x611777e4f368d122D1E9cEB2deAd94f8E9DC4De7`
+- Chain ID: `968`
+- RPC: `https://rpc.bohr.life`
+- Explorer: `https://scan.bohr.life/address/0x611777e4f368d122D1E9cEB2deAd94f8E9DC4De7`
+- Deploy tx: `0x405a1396f275bb44dc764e18e3a95644184686069f71f6eb26e122ae00d22931`
 
-- **Address:** `0x611777e4f368d122D1E9cEB2deAd94f8E9DC4De7`
-- **Chain ID:** `968`
-- **RPC:** `https://rpc.bohr.life`
-- **Explorer:** [scan.bohr.life/address/0x611777e4f368d122D1E9cEB2deAd94f8E9DC4De7](https://scan.bohr.life/address/0x611777e4f368d122D1E9cEB2deAd94f8E9DC4De7)
-- **Deploy tx:** `0x405a1396f275bb44dc764e18e3a95644184686069f71f6eb26e122ae00d22931`
-
-**Mainnet:** BOT Chain Mainnet — **TBA** (pending mainnet BOT allocation from organizer).
+**Mainnet** (BOT Chain Mainnet):
+- Address: `<full-address-mainnet-lo>`
+- Chain ID: `677`
+- RPC: `https://rpc.botchain.ai`
+- Explorer: `https://scan.botchain.ai/address/<full-address-mainnet-lo>`
+- Deploy tx: `0x8099d1dd0d7c95d6a61aca880cde1ee88fd0fc6766c59d8408b4709e521fca34`
 
 ### Backend
-
-- **Live URL:** (TBA setelah Render deploy)
-- **Health check:** (TBA)/health
+- Live URL: `https://verita.pxxlspace.cv`
+- Health check: `https://verita.pxxlspace.cv/health`
+- Platform: Pxxl App (free tier)
 
 ### Frontend
 
