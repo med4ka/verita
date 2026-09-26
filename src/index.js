@@ -31,6 +31,15 @@ app.get('/health', (req, res) => {
 
 app.use('/api', apiRouter);
 
+app.get('/', (req, res) => {
+  res.json({
+    ok: true,
+    service: 'Verita API',
+    version: '1.0.0',
+    endpoints: ['/health', '/api/analyze-receipt', '/api/receipts']
+  });
+});
+
 app.use(notFound);
 app.use(errorHandler);
 
@@ -58,3 +67,4 @@ process.on('SIGTERM', closeDb);
 process.on('SIGINT', closeDb);
 
 main();
+
