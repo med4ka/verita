@@ -59,8 +59,13 @@ Target users are **UMKM (small businesses)** and **campus organizations** that p
 - Deploy tx: `0x8099d1dd0d7c95d6a61aca880cde1ee88fd0fc6766c59d8408b4709e521fca34`
 
 ### Backend
+<<<<<<< HEAD
 - Live URL: `https://verita.pxxlspace.cv`
 - Health check: `https://verita.pxxlspace.cv/health`
+=======
+- Live URL: https://verita.pxxlspace.cv
+- Health check: https://verita.pxxlspace.cv/health
+>>>>>>> 992d3b88d0dcaaccd6675da1af048338decf4b4a
 - Platform: Pxxl App (free tier)
 
 ### Frontend
