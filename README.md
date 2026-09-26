@@ -119,7 +119,7 @@ npm run test:e2e     # e2e test endpoints (spawn local server)
 
 ## Team
 
-- [Nama lo] — Backend + Smart Contract
+- Ghifari — Backend + Smart Contract
 - Windy — Frontend
 
 ## Built on BOT Chain
