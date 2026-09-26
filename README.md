@@ -55,9 +55,9 @@ Target users are **UMKM (small businesses)** and **campus organizations** that p
 **Mainnet:** BOT Chain Mainnet — **TBA** (pending mainnet BOT allocation from organizer).
 
 ### Backend
-
-- **Live URL:** (TBA setelah Render deploy)
-- **Health check:** (TBA)/health
+- Live URL: https://verita.pxxlspace.cv
+- Health check: https://verita.pxxlspace.cv/health
+- Platform: Pxxl App (free tier)
 
 ### Frontend
 
