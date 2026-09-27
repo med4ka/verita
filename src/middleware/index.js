@@ -2,19 +2,13 @@
  * File: src/middleware/index.js
  * Description: Express middleware — multer file upload (R12), EVM wallet validation (R13), error handler, notFound.
  * Part of: API routes / middleware layer
- * Main dependencies: multer, fs, path
+ * Main dependencies: multer, node:os
  */
 
-const fs = require('fs');
-const path = require('path');
+const os = require('node:os');
 const multer = require('multer');
 
 const MAX_UPLOAD_SIZE_MB = parseInt(process.env.MAX_UPLOAD_SIZE_MB || '5', 10);
-const UPLOAD_DIR = path.join(__dirname, '..', '..', 'uploads');
-
-if (!fs.existsSync(UPLOAD_DIR)) {
-  fs.mkdirSync(UPLOAD_DIR, { recursive: true });
-}
 
 const MIME_EXT = {
   'image/jpeg': 'jpg',
@@ -22,7 +16,11 @@ const MIME_EXT = {
 };
 
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, UPLOAD_DIR),
+  // Files are temporary (deleted right after ELA) — OS tmp dir avoids EACCES on read-only containers.
+  destination: (req, file, cb) => {
+    const tmpDir = os.tmpdir();
+    cb(null, tmpDir);
+  },
   filename: (req, file, cb) => {
     const ext = MIME_EXT[file.mimetype] || 'bin';
     cb(null, `${Date.now()}-${Math.round(Math.random() * 1e9)}.${ext}`);
@@ -122,5 +120,4 @@ module.exports = {
   validateWalletQuery,
   errorHandler,
   notFound,
-  UPLOAD_DIR,
 };

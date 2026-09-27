@@ -6,7 +6,6 @@
  */
 require('dotenv').config();
 
-const fs = require('fs');
 const express = require('express');
 const cors = require('cors');
 const { initDb, closeDb } = require('./db');
@@ -16,8 +15,6 @@ const { notFound, errorHandler } = require('./middleware');
 const PORT = process.env.PORT || 3000;
 const CORS_ORIGIN = process.env.CORS_ORIGIN || '*';
 const MAX_UPLOAD_SIZE_MB = Number(process.env.MAX_UPLOAD_SIZE_MB || 5);
-
-fs.mkdirSync('uploads', { recursive: true });
 
 const app = express();
 
