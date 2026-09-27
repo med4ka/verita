@@ -99,8 +99,8 @@ router.get('/receipts/check-duplicate', async (req, res, next) => {
  * @param {object} req - Express request; query: hash (0x + 64 hex chars, canonicalHash)
  * @param {object} res - Express response
  * @param {function} next - Express next middleware
- * @returns {void} Sends { receiptId, walletAddress, storeName, amount, verdict, canonicalHash, onchainStatus, txHash, createdAt },
- *                 400 on invalid hash, 404 when not found
+ * @returns {void} Sends { found: true, receiptId, walletAddress, storeName, amount, verdict, canonicalHash, onchainStatus, txHash, createdAt },
+ *                 or 200 { found: false } when no row matches; 400 on invalid hash
  *
  * Notes:
  * - Mounted BEFORE any GET /receipts/:id route so "by-hash" is never treated as an id.
@@ -120,10 +120,11 @@ router.get('/receipts/by-hash', async (req, res, next) => {
       [String(hash).toLowerCase()]
     );
     if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'not found' });
+      return res.status(200).json({ found: false });
     }
     const row = result.rows[0];
     return res.status(200).json({
+      found: true,
       receiptId: row.id,
       walletAddress: row.wallet_address,
       storeName: row.store_name,
