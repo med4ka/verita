@@ -52,7 +52,17 @@ function Explorer() {
       try {
         const contract = await getContractReadOnly()
         const filter = contract.filters.ClaimRegistered()
-        const events = await contract.queryFilter(filter, 0, 'latest')
+
+        // Bound the block range to stay within free-RPC getLogs limits.
+        let events
+        try {
+          const currentBlock = await contract.runner.provider.getBlockNumber()
+          const fromBlock = Math.max(0, currentBlock - 5000)
+          events = await contract.queryFilter(filter, fromBlock, currentBlock)
+        } catch (rpcErr) {
+          console.warn('queryFilter gagal:', rpcErr)
+          throw new Error('Gagal memuat data on-chain. Coba lagi nanti.')
+        }
 
         const mapped = await Promise.all(
           events.map(async (ev) => {
