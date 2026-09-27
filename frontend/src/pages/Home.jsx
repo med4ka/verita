@@ -15,8 +15,13 @@ import {
   X,
   ExternalLink,
 } from 'lucide-react'
-
-const DEMO_EXPLORER_URL = 'https://scan.bohr.life'
+import { API_BASE, BOT_CHAIN } from '../config/contract'
+import {
+  connectWallet,
+  getContract,
+  getContractReadOnly,
+  switchToBotChain,
+} from '../services/wallet'
 
 function Home() {
   const fileInputRef = useRef(null)
@@ -25,6 +30,7 @@ function Home() {
   const [preview, setPreview] = useState(null)
 
   const [wallet, setWallet] = useState(null)
+  const [receiptId, setReceiptId] = useState(null)
 
   const [form, setForm] = useState({
     receiptNumber: '',
@@ -122,182 +128,176 @@ function Home() {
 
   /* =========================================================
      WALLET
-     
-     Hanya UI connection.
-     Smart contract belum digunakan.
+
+     Koneksi via services/wallet (ethers + MetaMask).
   ========================================================= */
 
-  const connectWallet = async () => {
+  const handleConnect = async () => {
     setError('')
 
-    if (!window.ethereum) {
-      setError(
-        'MetaMask belum terpasang di browser ini.'
-      )
-      return
-    }
-
     try {
-      const accounts =
-        await window.ethereum.request({
-          method: 'eth_requestAccounts',
-        })
-
-      if (accounts?.[0]) {
-        setWallet(accounts[0])
-      }
+      const { address } = await connectWallet()
+      setWallet({ address })
     } catch (err) {
       if (err?.code === 4001) {
-        setError(
-          'Permintaan koneksi wallet ditolak.'
-        )
+        setError('Kamu menolak koneksi wallet')
       } else {
-        setError(
-          'Gagal menghubungkan wallet.'
-        )
+        setError(err?.message || 'Gagal menghubungkan wallet.')
       }
     }
-  }
-
-  /* =========================================================
-     VALIDATION
-  ========================================================= */
-
-  const validateForm = () => {
-    if (!wallet) {
-      return 'Hubungkan wallet terlebih dahulu.'
-    }
-
-    if (!file) {
-      return 'Silakan upload nota terlebih dahulu.'
-    }
-
-    if (!form.receiptNumber.trim()) {
-      return 'Nomor nota wajib diisi.'
-    }
-
-    if (
-      !form.amount ||
-      Number(form.amount) <= 0
-    ) {
-      return 'Nominal harus lebih dari 0.'
-    }
-
-    if (!form.receiptDate) {
-      return 'Tanggal nota wajib diisi.'
-    }
-
-    if (!form.storeName.trim()) {
-      return 'Nama toko wajib diisi.'
-    }
-
-    return null
   }
 
   /* =========================================================
      ANALYZE
-     
-     SIMULASI UI
-     Nanti diganti POST /api/analyze-receipt.
+
+     Real call POST /api/analyze-receipt + soft-check duplikat.
   ========================================================= */
 
   const handleAnalyze = async () => {
-    setError('')
-    setAnalysis(null)
-    setDuplicate(null)
-    setTxHash(null)
-
-    const validationError =
-      validateForm()
-
-    if (validationError) {
-      setError(validationError)
+    if (!wallet) {
+      setError('Connect wallet dulu')
       return
     }
 
-    setAnalyzing(true)
-
-    await new Promise((resolve) =>
-      setTimeout(resolve, 1400)
-    )
-
-    /*
-     * Demo result.
-     * Nanti data ini berasal dari backend:
-     * tamperScore
-     * verdict
-     * canonicalHash
-     * receiptId
-     */
-
-    const demoScore = 18
-
-    const demoAnalysis = {
-      receiptId: 104,
-      tamperScore: demoScore,
-      verdict: 'clean',
-      canonicalHash:
-        '0x8f3d91b9d0f7e5e1c4f9a72b8c6e2a1d9f0c3b5a7e8d1f2c4b6a8e0d2f4c6a8',
-      onchainStatus: 'pending',
+    if (!file) {
+      setError('Pilih gambar nota dulu')
+      return
     }
 
-    setAnalysis(demoAnalysis)
+    if (
+      !form.receiptNumber ||
+      !form.amount ||
+      !form.receiptDate ||
+      !form.storeName
+    ) {
+      setError('Semua field wajib diisi')
+      return
+    }
 
-    /*
-     * Demo duplicate result.
-     * false = belum pernah diklaim.
-     */
-    setDuplicate({
-      exists: false,
-      hash: demoAnalysis.canonicalHash,
-    })
+    setError('')
+    setAnalyzing(true)
+    setAnalysis(null)
+    setDuplicate(null)
+    setReceiptId(null)
+    setTxHash(null)
 
-    setAnalyzing(false)
+    try {
+      const fd = new FormData()
+      fd.append('image', file)
+      fd.append('receiptNumber', form.receiptNumber)
+      fd.append('amount', String(form.amount))
+      fd.append('receiptDate', form.receiptDate)
+      fd.append('storeName', form.storeName)
+      fd.append('walletAddress', wallet.address.toLowerCase())
+
+      const res = await fetch(`${API_BASE}/api/analyze-receipt`, {
+        method: 'POST',
+        body: fd,
+      })
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}))
+        throw new Error(err.error || `Request gagal (${res.status})`)
+      }
+
+      const data = await res.json()
+      setAnalysis(data)
+      setReceiptId(data.receiptId)
+
+      // Soft-check duplikat — kalau gagal tidak memblokir hasil analisis
+      try {
+        const dupRes = await fetch(
+          `${API_BASE}/api/receipts/check-duplicate?hash=${data.canonicalHash}`
+        )
+        const dup = await dupRes.json()
+        setDuplicate(dup)
+      } catch (e) {
+        console.warn('Soft-check gagal:', e)
+      }
+    } catch (err) {
+      setError(err.message || 'Analisis gagal')
+    } finally {
+      setAnalyzing(false)
+    }
   }
 
   /* =========================================================
      REGISTER CLAIM
-     
-     SIMULASI UI
-     Nanti diganti registerClaim() via MetaMask.
+
+     Sign registerClaim() via MetaMask, lalu confirm-onchain.
   ========================================================= */
 
   const handleRegisterClaim = async () => {
+    if (!analysis || !receiptId) return
+
     setError('')
-
-    if (!wallet) {
-      setError(
-        'Hubungkan wallet terlebih dahulu.'
-      )
-      return
-    }
-
-    if (!analysis) {
-      setError(
-        'Analisis nota terlebih dahulu.'
-      )
-      return
-    }
-
-    if (duplicate?.exists) {
-      setShowDuplicate(true)
-      return
-    }
-
     setRegistering(true)
 
-    await new Promise((resolve) =>
-      setTimeout(resolve, 1800)
-    )
+    try {
+      await switchToBotChain()
+      const contract = await getContract()
 
-    const demoTx =
-      '0x71b8e2a6d4f9c3e1a7b5d8f2c6e0a4b9d3f7c1e5a8b2d6f0c4e9a3b7d1f5a9'
+      const tx = await contract.registerClaim(
+        analysis.canonicalHash,
+        `receipt://${receiptId}`
+      )
+      const receipt = await tx.wait()
 
-    setTxHash(demoTx)
+      await fetch(`${API_BASE}/api/receipts/${receiptId}/confirm-onchain`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          txHash: receipt.hash,
+          onchainStatus: 'registered',
+        }),
+      })
 
-    setRegistering(false)
+      setTxHash(receipt.hash)
+      setShowSuccess(true)
+    } catch (err) {
+      const msg =
+        err?.reason ||
+        err?.shortMessage ||
+        err?.info?.error?.message ||
+        err?.message ||
+        ''
 
-    setShowSuccess(true)
+      if (msg.includes('Duplicate receipt')) {
+        // Revert "Duplicate receipt" — ambil detail klaim pertama dari contract
+        try {
+          const readOnly = await getContractReadOnly()
+          const [, claimant, timestamp] = await readOnly.checkClaim(
+            analysis.canonicalHash
+          )
+          setDuplicate({
+            isClaimed: true,
+            claimant,
+            timestamp: Number(timestamp),
+          })
+        } catch (e) {
+          setDuplicate({ isClaimed: true, claimant: 'unknown', timestamp: 0 })
+        }
+
+        setShowDuplicate(true)
+
+        try {
+          await fetch(`${API_BASE}/api/receipts/${receiptId}/confirm-onchain`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              txHash: '0x' + '0'.repeat(64),
+              onchainStatus: 'rejected_duplicate',
+            }),
+          })
+        } catch (e) {
+          console.warn('Confirm-onchain gagal:', e)
+        }
+      } else {
+        setError(msg || 'Transaksi gagal')
+      }
+    } finally {
+      setRegistering(false)
+    }
   }
 
   /* =========================================================
@@ -353,7 +353,7 @@ function Home() {
         {/* Wallet */}
 
         <button
-          onClick={connectWallet}
+          onClick={handleConnect}
           className={`flex items-center gap-3 self-start rounded-xl border px-4 py-3 text-sm transition lg:self-auto ${
             wallet
               ? 'border-emerald-300/15 bg-emerald-400/[0.06] text-emerald-200'
@@ -379,7 +379,7 @@ function Home() {
 
             <p className="mt-0.5 text-xs font-medium">
               {wallet
-                ? shortWallet(wallet)
+                ? shortWallet(wallet.address)
                 : 'Connect Wallet'}
             </p>
           </div>
@@ -759,7 +759,7 @@ function Home() {
               {duplicate && (
                 <div
                   className={`rounded-2xl border p-5 ${
-                    duplicate.exists
+                    duplicate.isClaimed
                       ? 'border-red-300/15 bg-red-400/[0.05]'
                       : 'border-emerald-300/10 bg-emerald-400/[0.035]'
                   }`}
@@ -769,12 +769,12 @@ function Home() {
 
                     <div
                       className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${
-                        duplicate.exists
+                        duplicate.isClaimed
                           ? 'bg-red-400/10 text-red-300'
                           : 'bg-emerald-400/10 text-emerald-300'
                       }`}
                     >
-                      {duplicate.exists ? (
+                      {duplicate.isClaimed ? (
                         <ShieldAlert size={18} />
                       ) : (
                         <CheckCircle2 size={18} />
@@ -785,23 +785,23 @@ function Home() {
 
                       <p
                         className={`text-sm font-semibold ${
-                          duplicate.exists
+                          duplicate.isClaimed
                             ? 'text-red-200'
                             : 'text-emerald-200'
                         }`}
                       >
-                        {duplicate.exists
+                        {duplicate.isClaimed
                           ? 'Nota Sudah Pernah Diklaim'
                           : 'Belum Pernah Diklaim'}
                       </p>
 
                       <p className="mt-1 text-xs leading-5 text-slate-500">
-                        {duplicate.exists
+                        {duplicate.isClaimed
                           ? 'Nota dengan fingerprint yang sama sudah tercatat sebelumnya.'
                           : 'Tidak ditemukan klaim dengan fingerprint yang sama.'}
                       </p>
 
-                      {duplicate.exists &&
+                      {duplicate.isClaimed &&
                         duplicate.claimant && (
                           <p className="mt-3 font-mono text-[10px] text-red-300/70">
                             {shortWallet(
@@ -821,7 +821,7 @@ function Home() {
 
               <button
                 onClick={
-                  duplicate?.exists
+                  duplicate?.isClaimed
                     ? () =>
                         setShowDuplicate(true)
                     : handleRegisterClaim
@@ -831,7 +831,7 @@ function Home() {
                   !duplicate
                 }
                 className={`flex w-full items-center justify-center gap-2 rounded-xl px-5 py-3.5 text-sm font-semibold transition ${
-                  duplicate?.exists
+                  duplicate?.isClaimed
                     ? 'border border-red-300/15 bg-red-400/10 text-red-200 hover:bg-red-400/15'
                     : 'bg-blue-500 text-white shadow-lg shadow-blue-500/20 hover:bg-blue-400'
                 } disabled:cursor-not-allowed disabled:opacity-50`}
@@ -844,7 +844,7 @@ function Home() {
                     />
                     Menunggu Konfirmasi...
                   </>
-                ) : duplicate?.exists ? (
+                ) : duplicate?.isClaimed ? (
                   <>
                     <ShieldAlert size={17} />
                     Nota Sudah Diklaim
@@ -951,7 +951,7 @@ function Home() {
             <div className="mt-5 flex gap-3">
 
               <a
-                href={`${DEMO_EXPLORER_URL}/tx/${txHash}`}
+                href={`${BOT_CHAIN.blockExplorerUrls[0]}/tx/${txHash}`}
                 target="_blank"
                 rel="noreferrer"
                 className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-xs font-medium text-slate-300 transition hover:bg-white/[0.08] hover:text-white"
@@ -1021,8 +1021,7 @@ function Home() {
               </p>
 
               <p className="mt-2 break-all font-mono text-xs text-slate-300">
-                {duplicate?.claimant ||
-                  '0x742d...f44e'}
+                {duplicate?.claimant || '-'}
               </p>
 
               {duplicate?.timestamp && (

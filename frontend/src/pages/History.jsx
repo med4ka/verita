@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
   Search,
   Filter,
@@ -14,77 +14,17 @@ import {
   Clock3,
   Copy,
   ArrowUpRight,
+  Loader2,
 } from 'lucide-react'
-
-const DEMO_WALLET = '0x742d35A4C8fB92e1D6A3B7C91F44E5A8'
-
-const DEMO_HISTORY = [
-  {
-    receiptId: 104,
-    receiptNumber: 'INV-2026-001',
-    storeName: 'Toko ABC',
-    amount: 250000,
-    receiptDate: '2026-09-24',
-    createdAt: '2026-09-24T14:32:00',
-    verdict: 'clean',
-    tamperScore: 18,
-    onchainStatus: 'registered',
-    txHash:
-      '0x71b8e2a6d4f9c3e1a7b5d8f2c6e0a4b9d3f7c1e5a8b2d6f0c4e9a3b7d1f5a9',
-    canonicalHash:
-      '0x8f3d91b9d0f7e5e1c4f9a72b8c6e2a1d9f0c3b5a7e8d1f2c4b6a8e0d2f4c6a8',
-  },
-
-  {
-    receiptId: 103,
-    receiptNumber: 'INV-2026-002',
-    storeName: 'Kopi Senja',
-    amount: 185000,
-    receiptDate: '2026-09-23',
-    createdAt: '2026-09-23T11:18:00',
-    verdict: 'suspicious',
-    tamperScore: 43,
-    onchainStatus: 'registered',
-    txHash:
-      '0x4c9e7a2b8d1f6e3a5c0b9d7e2f8a4c1b6d3e9f5a7c2b8d4e0f6a1c9b3d7e5',
-    canonicalHash:
-      '0x9a7c4e2b1d8f6a3c5e0b9d2f7a4c8e1b6d3f9a5c7e2b8d4f0a1c6e9b3d5',
-  },
-
-  {
-    receiptId: 102,
-    receiptNumber: 'INV-2026-003',
-    storeName: 'Stationery Hub',
-    amount: 125000,
-    receiptDate: '2026-09-21',
-    createdAt: '2026-09-21T16:45:00',
-    verdict: 'clean',
-    tamperScore: 11,
-    onchainStatus: 'pending',
-    txHash: null,
-    canonicalHash:
-      '0x3d8f2a6c1e9b7d4f0a5c8e2b6d1f9a3c7e4b0d8f2a6c5e1b9d7f3a8c4e2',
-  },
-
-  {
-    receiptId: 101,
-    receiptNumber: 'INV-2026-004',
-    storeName: 'Digital Mart',
-    amount: 475000,
-    receiptDate: '2026-09-20',
-    createdAt: '2026-09-20T09:22:00',
-    verdict: 'tampered',
-    tamperScore: 76,
-    onchainStatus: 'rejected_duplicate',
-    txHash:
-      '0x2f7a4c9e1b6d3f8a0c5e2b7d4f9a1c6e3b8d5f0a2c7e4b9d1f6a3c8e5b2',
-    canonicalHash:
-      '0x6e2a9c4b7d1f8e3a5c0b6d9f2a4e7c1b8d3f5a0c6e9b2d4f7a1c8e5b3',
-  },
-]
+import { API_BASE } from '../config/contract'
+import { getCurrentWallet } from '../services/wallet'
 
 function History() {
   const [search, setSearch] = useState('')
+  const [history, setHistory] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+  const [walletAddress, setWalletAddress] = useState(null)
   const [verdictFilter, setVerdictFilter] =
     useState('all')
   const [statusFilter, setStatusFilter] =
@@ -93,8 +33,60 @@ function History() {
   const [selectedReceipt, setSelectedReceipt] =
     useState(null)
 
+  /* =========================================================
+     LOAD — fetch riwayat klaim milik wallet aktif
+  ========================================================= */
+
+  useEffect(() => {
+    async function load() {
+      setLoading(true)
+      setError(null)
+
+      try {
+        const wallet = await getCurrentWallet()
+
+        if (!wallet) {
+          setHistory([])
+          setWalletAddress(null)
+          return
+        }
+
+        setWalletAddress(wallet.address)
+
+        const res = await fetch(
+          `${API_BASE}/api/receipts?wallet=${wallet.address.toLowerCase()}`
+        )
+
+        if (!res.ok) throw new Error('Gagal load history')
+
+        const data = await res.json()
+
+        const mapped = data.map((r) => ({
+          id: r.receiptId,
+          receiptNumber: `#${r.receiptId}`,
+          date: r.createdAt?.split('T')[0] || '-',
+          storeName: r.storeName,
+          amount: r.amount,
+          verdict: r.verdict,
+          status: r.onchainStatus,
+          txHash: r.txHash,
+          canonicalHash: r.canonicalHash,
+        }))
+
+        setHistory(mapped)
+      } catch (err) {
+        setError(err.message)
+        setHistory([])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    load()
+  }, [])
+
   const filteredHistory = useMemo(() => {
-    return DEMO_HISTORY.filter((item) => {
+    return history.filter((item) => {
       const keyword =
         search.toLowerCase().trim()
 
@@ -113,7 +105,7 @@ function History() {
 
       const matchesStatus =
         statusFilter === 'all' ||
-        item.onchainStatus === statusFilter
+        item.status === statusFilter
 
       return (
         matchesSearch &&
@@ -125,22 +117,23 @@ function History() {
     search,
     verdictFilter,
     statusFilter,
+    history,
   ])
 
-  const totalAmount = DEMO_HISTORY.reduce(
+  const totalAmount = history.reduce(
     (total, item) =>
       total + item.amount,
     0
   )
 
   const registeredCount =
-    DEMO_HISTORY.filter(
+    history.filter(
       (item) =>
-        item.onchainStatus === 'registered'
+        item.status === 'registered'
     ).length
 
   const suspiciousCount =
-    DEMO_HISTORY.filter(
+    history.filter(
       (item) =>
         item.verdict !== 'clean'
     ).length
@@ -185,7 +178,9 @@ function History() {
               </p>
 
               <p className="mt-0.5 font-mono text-xs text-slate-300">
-                {shortWallet(DEMO_WALLET)}
+                {walletAddress
+                  ? shortWallet(walletAddress)
+                  : 'Tidak terhubung'}
               </p>
             </div>
 
@@ -196,6 +191,27 @@ function History() {
       </div>
 
       {/* =====================================================
+          LOADING / ERROR
+      ====================================================== */}
+
+      {loading && (
+        <div className="mb-5 flex items-center gap-3 rounded-2xl border border-white/10 bg-slate-900/25 px-4 py-3 text-sm text-slate-300 backdrop-blur-xl">
+          <Loader2 size={17} className="animate-spin text-blue-300" />
+          Memuat history klaim...
+        </div>
+      )}
+
+      {error && (
+        <div className="mb-5 flex items-start gap-3 rounded-2xl border border-red-300/10 bg-red-400/[0.06] px-4 py-3 text-sm text-red-200 backdrop-blur-xl">
+          <AlertTriangle
+            size={17}
+            className="mt-0.5 shrink-0 text-red-300"
+          />
+          <p>{error}</p>
+        </div>
+      )}
+
+      {/* =====================================================
           SUMMARY CARDS
       ====================================================== */}
 
@@ -204,7 +220,7 @@ function History() {
         <SummaryCard
           icon={ReceiptText}
           label="Total Klaim"
-          value={DEMO_HISTORY.length}
+          value={history.length}
           suffix="nota"
         />
 
@@ -252,7 +268,7 @@ function History() {
 
             <p className="mt-1 text-xs text-slate-500">
               {filteredHistory.length}{' '}
-              dari {DEMO_HISTORY.length}{' '}
+              dari {history.length}{' '}
               klaim ditampilkan
             </p>
           </div>
@@ -429,7 +445,7 @@ function History() {
                   filteredHistory.map(
                     (item) => (
                       <HistoryRow
-                        key={item.receiptId}
+                        key={item.id}
                         item={item}
                         onClick={() =>
                           setSelectedReceipt(
@@ -569,7 +585,7 @@ function HistoryRow({
             </p>
 
             <p className="mt-0.5 text-[10px] text-slate-600">
-              ID #{item.receiptId}
+              ID #{item.id}
             </p>
           </div>
 
@@ -589,7 +605,7 @@ function HistoryRow({
           />
 
           {formatDate(
-            item.receiptDate
+            item.date
           )}
 
         </div>
@@ -648,11 +664,11 @@ function HistoryRow({
 
       <td className="px-5 py-4">
 
-        <BlockchainBadge
-          status={
-            item.onchainStatus
-          }
-        />
+            <BlockchainBadge
+              status={
+                item.status
+              }
+            />
 
       </td>
 
@@ -754,7 +770,7 @@ function DetailModal({
               </h2>
 
               <p className="mt-0.5 text-xs text-slate-600">
-                Receipt #{receipt.receiptId}
+                Receipt #{receipt.id}
               </p>
 
             </div>
@@ -781,12 +797,12 @@ function DetailModal({
             }
           />
 
-          <DetailItem
-            label="Tanggal"
-            value={formatDate(
-              receipt.receiptDate
-            )}
-          />
+            <DetailItem
+              label="Tanggal"
+              value={formatDate(
+                receipt.date
+              )}
+            />
 
           <DetailItem
             label="Nama Toko"
@@ -846,7 +862,7 @@ function DetailModal({
 
             <BlockchainBadge
               status={
-                receipt.onchainStatus
+                receipt.status
               }
             />
 
