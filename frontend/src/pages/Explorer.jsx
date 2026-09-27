@@ -55,19 +55,13 @@ function Explorer() {
 
         let events
         try {
-          // Coba dari genesis dulu — di testnet BOT Chain, total block masih < 1 juta, aman
-          events = await contract.queryFilter(filter, 0, 'latest')
+          const currentBlock = await contract.runner.provider.getBlockNumber()
+          // Window 100k block (~16 jam di BOT Chain) — cukup buat demo, gak timeout
+          const fromBlock = Math.max(0, currentBlock - 100000)
+          events = await contract.queryFilter(filter, fromBlock, currentBlock)
         } catch (rpcErr) {
-          // Kalau RPC nolak (rate limit), fallback ke window 50000 block (~8 jam)
-          console.warn('queryFilter dari genesis gagal, fallback ke 50k block:', rpcErr)
-          try {
-            const currentBlock = await contract.runner.provider.getBlockNumber()
-            const fromBlock = Math.max(0, currentBlock - 50000)
-            events = await contract.queryFilter(filter, fromBlock, currentBlock)
-          } catch (fallbackErr) {
-            console.warn('Fallback queryFilter gagal:', fallbackErr)
-            throw new Error('Gagal memuat data on-chain. Coba lagi nanti.')
-          }
+          console.warn('queryFilter gagal:', rpcErr)
+          throw new Error('Gagal memuat data on-chain. Coba lagi nanti.')
         }
 
         const mapped = await Promise.all(
@@ -87,17 +81,20 @@ function Explorer() {
               )
               if (res.ok) {
                 const d = await res.json()
-                storeName = d.storeName ?? '—'
-                amount = d.amount ?? 0
-                verdict = d.verdict ?? 'clean'
-                receiptNumber =
-                  d.receiptId != null ? `#${d.receiptId}` : '—'
-                receiptDate = d.createdAt
-                  ? d.createdAt.split('T')[0]
-                  : '-'
-                canonicalHash = d.canonicalHash || hash
+                if (d.found !== false) {
+                  storeName = d.storeName || '—'
+                  amount = d.amount || 0
+                  verdict = d.verdict || 'clean'
+                  receiptNumber =
+                    d.receiptId != null ? `#${d.receiptId}` : '—'
+                  receiptDate = d.createdAt
+                    ? d.createdAt.split('T')[0]
+                    : '-'
+                  canonicalHash = d.canonicalHash || hash
+                }
               }
             } catch (e) {
+              // Skip enrichment, tetap tampilkan data dari chain
               console.warn('Enrichment gagal:', e)
             }
 
@@ -359,15 +356,23 @@ function Explorer() {
                     <tr>
                       <td colSpan="7" className="px-5 py-20 text-center">
                         <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.035] text-slate-400">
-                          <Search size={22} />
+                          {claims.length === 0 ? (
+                            <Blocks size={22} />
+                          ) : (
+                            <Search size={22} />
+                          )}
                         </div>
 
                         <p className="mt-4 text-sm font-medium text-slate-300">
-                          Tidak ada klaim ditemukan
+                          {claims.length === 0
+                            ? 'Belum ada klaim on-chain'
+                            : 'Tidak ada klaim ditemukan'}
                         </p>
 
                         <p className="mt-1 text-xs text-slate-400">
-                          Coba ubah kata pencarian atau filter.
+                          {claims.length === 0
+                            ? 'Belum ada klaim yang tercatat di BOT Chain.'
+                            : 'Coba ubah kata pencarian atau filter.'}
                         </p>
                       </td>
                     </tr>
