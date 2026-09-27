@@ -336,7 +336,7 @@ function Home() {
       <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
 
         <div>
-          <p className="mb-1 text-xs font-medium uppercase tracking-[0.18em] text-blue-300/60">
+          <p className="mb-1 text-xs font-medium uppercase tracking-[0.18em] text-blue-300/85">
             Verifikasi Klaim Digital
           </p>
 
@@ -344,7 +344,7 @@ function Home() {
             Analisis Nota
           </h1>
 
-          <p className="mt-2 text-sm text-slate-300/60">
+          <p className="mt-2 text-sm text-slate-300/85">
             Periksa indikasi perubahan gambar dan
             verifikasi klaim sebelum dicatat.
           </p>
@@ -371,7 +371,7 @@ function Home() {
           </div>
 
           <div className="text-left">
-            <p className="text-[10px] uppercase tracking-wider text-slate-500">
+            <p className="text-xs uppercase tracking-wider text-slate-300">
               {wallet
                 ? 'Wallet Terhubung'
                 : 'Wallet'}
@@ -403,7 +403,7 @@ function Home() {
 
           <button
             onClick={() => setError('')}
-            className="ml-auto text-red-300/60 transition hover:text-red-200"
+            className="ml-auto text-red-300/85 transition hover:text-red-200"
           >
             <X size={16} />
           </button>
@@ -438,7 +438,7 @@ function Home() {
                   Upload Nota
                 </h2>
 
-                <p className="mt-0.5 text-xs text-slate-500">
+                <p className="mt-0.5 text-xs text-slate-400">
                   Upload gambar nota untuk dianalisis.
                 </p>
               </div>
@@ -483,11 +483,11 @@ function Home() {
                 Klik untuk memilih nota
               </p>
 
-              <p className="mt-1 text-sm text-slate-500">
+              <p className="mt-1 text-sm text-slate-400">
                 atau drag & drop file di sini
               </p>
 
-              <span className="mt-5 rounded-full border border-white/10 bg-slate-900/30 backdrop-blur-xl px-3 py-1.5 text-[11px] text-slate-500">
+              <span className="mt-5 rounded-full border border-white/10 bg-slate-900/30 backdrop-blur-xl px-3 py-1.5 text-xs text-slate-400">
                 JPG / PNG · Maks. 5 MB
               </span>
 
@@ -523,7 +523,7 @@ function Home() {
                     {file.name}
                   </p>
 
-                  <p className="mt-0.5 text-[10px] text-slate-600">
+                  <p className="mt-0.5 text-xs text-slate-400">
                     {(
                       file.size /
                       1024 /
@@ -533,7 +533,7 @@ function Home() {
                   </p>
                 </div>
 
-                <span className="rounded-md bg-emerald-400/10 px-2 py-1 text-[10px] text-emerald-300">
+                <span className="rounded-md bg-emerald-400/10 px-2 py-1 text-xs text-emerald-300">
                   Siap dianalisis
                 </span>
 
@@ -608,7 +608,7 @@ function Home() {
             )}
           </button>
 
-          <p className="mt-3 text-center text-[10px] text-slate-600">
+          <p className="mt-3 text-center text-xs text-slate-400">
             Analisis menggunakan indikator forensik
             gambar untuk mendeteksi perubahan.
           </p>
@@ -636,7 +636,7 @@ function Home() {
                   Hasil Analisis
                 </h2>
 
-                <p className="mt-0.5 text-xs text-slate-500">
+                <p className="mt-0.5 text-xs text-slate-400">
                   Hasil pemeriksaan indikasi perubahan gambar.
                 </p>
               </div>
@@ -648,7 +648,7 @@ function Home() {
           {!analysis ? (
             <div className="flex min-h-[560px] flex-col items-center justify-center rounded-2xl border border-white/10 bg-slate-900/25 backdrop-blur-xl px-8 text-center">
 
-              <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl border border-white/10 bg-slate-900/30 backdrop-blur-xl text-slate-600">
+              <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl border border-white/10 bg-slate-900/30 backdrop-blur-xl text-slate-400">
                 <ScanSearch size={27} />
               </div>
 
@@ -656,7 +656,7 @@ function Home() {
                 Belum ada hasil analisis
               </h3>
 
-              <p className="mt-2 max-w-sm text-xs leading-5 text-slate-600">
+              <p className="mt-2 max-w-sm text-xs leading-5 text-slate-300">
                 Upload nota dan lengkapi datanya
                 untuk menjalankan analisis.
               </p>
@@ -672,7 +672,7 @@ function Home() {
                 <div className="flex items-start justify-between">
 
                   <div>
-                    <p className="text-xs text-slate-500">
+                    <p className="text-xs text-slate-400">
                       ELA Tamper Score
                     </p>
 
@@ -682,7 +682,7 @@ function Home() {
                         {analysis.tamperScore}
                       </span>
 
-                      <span className="pb-1 text-sm text-slate-600">
+                      <span className="pb-1 text-sm text-slate-400">
                         / 100
                       </span>
 
@@ -712,7 +712,7 @@ function Home() {
 
                   </div>
 
-                  <div className="mt-2 flex justify-between text-[10px] text-slate-600">
+                  <div className="mt-2 flex justify-between text-xs text-slate-400">
                     <span>Bersih</span>
                     <span>Perlu Ditinjau</span>
                     <span>Perubahan</span>
@@ -744,7 +744,7 @@ function Home() {
                       {verdictConfig.title}
                     </p>
 
-                    <p className="mt-1 text-xs leading-5 text-slate-400">
+                    <p className="mt-1 text-xs leading-5 text-slate-300">
                       {verdictConfig.description}
                     </p>
 
@@ -795,7 +795,7 @@ function Home() {
                           : 'Belum Pernah Diklaim'}
                       </p>
 
-                      <p className="mt-1 text-xs leading-5 text-slate-500">
+                      <p className="mt-1 text-xs leading-5 text-slate-300">
                         {duplicate.isClaimed
                           ? 'Nota dengan fingerprint yang sama sudah tercatat sebelumnya.'
                           : 'Tidak ditemukan klaim dengan fingerprint yang sama.'}
@@ -803,7 +803,7 @@ function Home() {
 
                       {duplicate.isClaimed &&
                         duplicate.claimant && (
-                          <p className="mt-3 font-mono text-[10px] text-red-300/70">
+                          <p className="mt-3 font-mono text-xs text-red-300/90">
                             {shortWallet(
                               duplicate.claimant
                             )}
@@ -863,7 +863,7 @@ function Home() {
 
                 <div className="mb-2 flex items-center justify-between">
 
-                  <p className="text-[10px] uppercase tracking-wider text-slate-600">
+                  <p className="text-xs uppercase tracking-wider text-slate-300">
                     Canonical Hash
                   </p>
 
@@ -873,7 +873,7 @@ function Home() {
                         analysis.canonicalHash
                       )
                     }
-                    className="text-slate-600 transition hover:text-slate-300"
+                    className="text-slate-400 transition hover:text-slate-300"
                     title="Copy hash"
                   >
                     <Copy size={13} />
@@ -881,13 +881,13 @@ function Home() {
 
                 </div>
 
-                <p className="break-all font-mono text-[10px] leading-5 text-slate-500">
+                <p className="break-all font-mono text-xs leading-5 text-slate-300">
                   {analysis.canonicalHash}
                 </p>
 
               </div>
 
-              <p className="text-center text-[10px] leading-4 text-slate-600">
+              <p className="text-center text-xs leading-4 text-slate-400">
                 Hasil ELA merupakan indikator forensik
                 gambar dan bukan bukti mutlak adanya
                 manipulasi.
@@ -929,7 +929,7 @@ function Home() {
                 Klaim Berhasil Dicatat
               </h2>
 
-              <p className="mt-2 text-sm leading-6 text-slate-500">
+              <p className="mt-2 text-sm leading-6 text-slate-400">
                 Klaim berhasil diproses dan
                 transaction hash sudah tersedia.
               </p>
@@ -938,11 +938,11 @@ function Home() {
 
             <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.025] p-4">
 
-              <p className="text-[10px] uppercase tracking-wider text-slate-600">
+              <p className="text-xs uppercase tracking-wider text-slate-300">
                 Transaction Hash
               </p>
 
-              <p className="mt-2 break-all font-mono text-[10px] leading-5 text-slate-400">
+              <p className="mt-2 break-all font-mono text-xs leading-5 text-slate-300">
                 {txHash}
               </p>
 
@@ -1006,7 +1006,7 @@ function Home() {
                   Nota Sudah Pernah Diklaim
                 </h2>
 
-                <p className="mt-1 text-xs leading-5 text-slate-500">
+                <p className="mt-1 text-xs leading-5 text-slate-300">
                   Nota dengan fingerprint yang sama
                   tidak dapat didaftarkan kembali.
                 </p>
@@ -1016,7 +1016,7 @@ function Home() {
 
             <div className="mt-5 rounded-2xl border border-white/10 bg-white/[0.025] p-4">
 
-              <p className="text-[10px] uppercase tracking-wider text-slate-600">
+              <p className="text-xs uppercase tracking-wider text-slate-300">
                 Wallet Klaim Pertama
               </p>
 
@@ -1025,7 +1025,7 @@ function Home() {
               </p>
 
               {duplicate?.timestamp && (
-                <p className="mt-2 text-[11px] text-slate-600">
+                <p className="mt-2 text-xs text-slate-400">
                   {new Date(
                     duplicate.timestamp * 1000
                   ).toLocaleString(
@@ -1069,7 +1069,7 @@ function InputField({
   return (
     <label className="block">
 
-      <span className="mb-2 block text-xs font-medium text-slate-400">
+      <span className="mb-2 block text-sm font-medium text-slate-300">
         {label}
       </span>
 
@@ -1079,7 +1079,7 @@ function InputField({
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className="w-full rounded-xl border border-white/10 bg-slate-900/30 backdrop-blur-xl px-4 py-3 text-sm text-white outline-none transition placeholder:text-slate-600 focus:border-blue-400/40 focus:bg-white/[0.055] focus:ring-2 focus:ring-blue-500/10"
+        className="w-full rounded-xl border border-white/10 bg-slate-900/30 backdrop-blur-xl px-4 py-3 text-sm text-white outline-none transition placeholder:text-slate-400 focus:border-blue-400/40 focus:bg-white/[0.055] focus:ring-2 focus:ring-blue-500/10"
       />
 
     </label>

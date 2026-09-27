@@ -74,7 +74,7 @@ function Layout() {
             VERITA
           </h1>
 
-          <p className="mt-1 text-xs text-slate-400">
+          <p className="mt-1 text-sm text-slate-300">
             Verifikasi Klaim Digital
           </p>
         </div>
@@ -128,7 +128,7 @@ function Layout() {
 
         {/* Footer */}
         <div className="absolute bottom-5 left-5 right-5 border-t border-white/10 pt-4">
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-slate-400">
             Powered by BOT Chain
           </p>
         </div>

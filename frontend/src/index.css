@@ -414,7 +414,7 @@ a {
 }
 
 .glass-input::placeholder {
-  color: rgba(100, 116, 139, 0.76);
+  color: rgba(148, 163, 184, 0.95);
 }
 
 .glass-input:hover {
@@ -667,7 +667,7 @@ a {
    ========================================================= */
 
 input[type="date"]::-webkit-calendar-picker-indicator {
-  opacity: 0.62;
+  opacity: 0.9;
   filter: invert(1);
   cursor: pointer;
 }

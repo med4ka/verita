@@ -151,7 +151,7 @@ function Explorer() {
     <div className="explorer-page mx-auto w-full max-w-7xl">
       {/* HEADER */}
       <div className="mb-6">
-        <p className="mb-1 flex items-center gap-2 text-xs font-medium uppercase tracking-[0.18em] text-blue-300/70">
+        <p className="mb-1 flex items-center gap-2 text-xs font-medium uppercase tracking-[0.18em] text-blue-300/85">
           <Globe2 size={13} />
           Blockchain Explorer
         </p>
@@ -162,7 +162,7 @@ function Explorer() {
               Public Explorer
             </h1>
 
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300/65">
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300/85">
               Lihat klaim yang telah tercatat pada jaringan BOT Chain secara
               transparan.
             </p>
@@ -249,7 +249,7 @@ function Explorer() {
                     Global Claims
                   </h2>
 
-                  <p className="mt-0.5 text-xs text-slate-400/70">
+                  <p className="mt-0.5 text-xs text-slate-300/90">
                     Data klaim yang tercatat pada registry.
                   </p>
                 </div>
@@ -261,7 +261,7 @@ function Explorer() {
               <div className="relative">
                 <Search
                   size={15}
-                  className="pointer-events-none absolute left-3 top-1/2 z-10 -translate-y-1/2 text-slate-400/70"
+                  className="pointer-events-none absolute left-3 top-1/2 z-10 -translate-y-1/2 text-slate-300/90"
                 />
 
                 <input
@@ -269,7 +269,7 @@ function Explorer() {
                   value={search}
                   onChange={(event) => setSearch(event.target.value)}
                   placeholder="Cari nota, toko, wallet..."
-                  className="glass-input h-11 w-full rounded-xl pl-9 pr-4 text-xs text-white outline-none transition placeholder:text-slate-500 focus:border-blue-300/40 sm:w-64"
+                  className="glass-input h-11 w-full rounded-xl pl-9 pr-4 text-sm text-white outline-none transition placeholder:text-slate-400 focus:border-blue-300/40 sm:w-64"
                 />
               </div>
 
@@ -278,10 +278,10 @@ function Explorer() {
                 <button
                   type="button"
                   onClick={() => setFilterOpen((current) => !current)}
-                  className="glass-input flex h-11 w-full items-center justify-between rounded-xl px-3 text-xs text-slate-300 outline-none transition hover:border-blue-300/30"
+                  className="glass-input flex h-11 w-full items-center justify-between rounded-xl px-3 text-sm text-slate-300 outline-none transition hover:border-blue-300/30"
                 >
                   <span className="flex items-center gap-2">
-                    <Filter size={14} className="text-slate-400/70" />
+                    <Filter size={14} className="text-slate-300/90" />
                     {selectedFilter.label}
                   </span>
 
@@ -306,7 +306,7 @@ function Explorer() {
                             setVerdictFilter(option.value)
                             setFilterOpen(false)
                           }}
-                          className={`w-full rounded-lg px-3 py-2.5 text-left text-xs transition ${
+                          className={`w-full rounded-lg px-3 py-2.5 text-left text-sm transition ${
                             active
                               ? 'bg-blue-400/15 text-blue-200'
                               : 'text-slate-400 hover:bg-white/[0.07] hover:text-white'
@@ -342,7 +342,7 @@ function Explorer() {
                   {filteredClaims.length === 0 ? (
                     <tr>
                       <td colSpan="7" className="px-5 py-20 text-center">
-                        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.035] text-slate-500">
+                        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.035] text-slate-400">
                           <Search size={22} />
                         </div>
 
@@ -350,7 +350,7 @@ function Explorer() {
                           Tidak ada klaim ditemukan
                         </p>
 
-                        <p className="mt-1 text-xs text-slate-500">
+                        <p className="mt-1 text-xs text-slate-400">
                           Coba ubah kata pencarian atau filter.
                         </p>
                       </td>
@@ -370,7 +370,7 @@ function Explorer() {
           </div>
 
           {/* FOOTER */}
-          <div className="mt-4 flex flex-col gap-2 border-t border-white/[0.06] pt-4 text-[10px] text-slate-500 sm:flex-row sm:items-center sm:justify-between">
+          <div className="mt-4 flex flex-col gap-2 border-t border-white/[0.06] pt-4 text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between">
             <p>
               Data ditampilkan berdasarkan catatan klaim pada jaringan.
             </p>
@@ -379,7 +379,7 @@ function Explorer() {
               href={EXPLORER_URL}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1.5 text-blue-300/70 transition hover:text-blue-200"
+              className="inline-flex items-center gap-1.5 text-blue-300/85 transition hover:text-blue-200"
             >
               BOT Chain Explorer
               <ExternalLink size={11} />
@@ -443,7 +443,7 @@ function SummaryCard({
           <Icon size={17} />
         </div>
 
-        <p className="mt-4 text-[11px] font-medium text-slate-400/75">
+        <p className="mt-4 text-xs font-medium text-slate-300/90">
           {label}
         </p>
 
@@ -453,7 +453,7 @@ function SummaryCard({
           </span>
 
           {suffix && (
-            <span className="text-[10px] text-slate-500">{suffix}</span>
+            <span className="text-xs text-slate-400">{suffix}</span>
           )}
         </div>
       </div>
@@ -474,7 +474,7 @@ function TableHead({ children, align = 'left' }) {
           : align === 'center'
             ? 'text-center'
             : 'text-left'
-      } text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-400/75`}
+      } text-sm font-semibold uppercase tracking-[0.12em] text-slate-300/90`}
     >
       {children}
     </th>
@@ -501,7 +501,7 @@ function ExplorerRow({ claim, onClick }) {
               {claim.receiptNumber}
             </p>
 
-            <p className="mt-1 flex items-center gap-1.5 text-[10px] text-slate-500">
+            <p className="mt-1 flex items-center gap-1.5 text-xs text-slate-400">
               <CalendarDays size={10} />
               {formatDate(claim.receiptDate)}
             </p>
@@ -512,7 +512,7 @@ function ExplorerRow({ claim, onClick }) {
       {/* STORE */}
       <td className="px-5 py-4">
         <div className="flex items-center gap-2">
-          <Store size={13} className="text-slate-500" />
+          <Store size={13} className="text-slate-400" />
 
           <span className="text-xs text-slate-300/90">
             {claim.storeName}
@@ -534,7 +534,7 @@ function ExplorerRow({ claim, onClick }) {
             <Wallet size={13} />
           </div>
 
-          <span className="font-mono text-[10px] text-slate-500">
+          <span className="font-mono text-xs text-slate-400">
             {shortWallet(claim.claimant)}
           </span>
         </div>
@@ -543,7 +543,7 @@ function ExplorerRow({ claim, onClick }) {
       {/* VERDICT */}
       <td className="px-5 py-4">
         <span
-          className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] font-medium ${verdict.badge}`}
+          className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium ${verdict.badge}`}
         >
           <verdict.icon size={11} />
           {verdict.label}
@@ -553,9 +553,9 @@ function ExplorerRow({ claim, onClick }) {
       {/* TIMESTAMP */}
       <td className="px-5 py-4">
         <div className="flex items-center gap-2">
-          <CheckCircle2 size={13} className="text-emerald-300/65" />
+          <CheckCircle2 size={13} className="text-emerald-300/85" />
 
-          <span className="text-[10px] text-slate-500">
+          <span className="text-xs text-slate-400">
             {formatDateTime(claim.timestamp * 1000)}
           </span>
         </div>
@@ -569,7 +569,7 @@ function ExplorerRow({ claim, onClick }) {
             event.stopPropagation()
             onClick()
           }}
-          className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-transparent text-slate-500 transition hover:border-white/10 hover:bg-white/[0.07] hover:text-white"
+          className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-transparent text-slate-400 transition hover:border-white/10 hover:bg-white/[0.07] hover:text-white"
         >
           <ArrowUpRight size={15} />
         </button>
@@ -603,7 +603,7 @@ function ClaimDetailModal({ claim, onClose }) {
               </div>
 
               <div>
-                <p className="text-[10px] uppercase tracking-[0.14em] text-blue-300/65">
+                <p className="text-xs uppercase tracking-[0.14em] text-blue-300/85">
                   Public Claim
                 </p>
 
@@ -616,7 +616,7 @@ function ClaimDetailModal({ claim, onClose }) {
             <button
               type="button"
               onClick={onClose}
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-slate-500 transition hover:bg-white/[0.08] hover:text-white"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-slate-400 transition hover:bg-white/[0.08] hover:text-white"
             >
               <X size={16} />
             </button>
@@ -639,15 +639,15 @@ function ClaimDetailModal({ claim, onClose }) {
           {/* CLAIMANT */}
           <GlassDetailBox>
             <div className="flex items-center justify-between">
-              <p className="text-[10px] uppercase tracking-[0.12em] text-slate-500">
+              <p className="text-xs uppercase tracking-[0.12em] text-slate-300">
                 Claimant Wallet
               </p>
 
-              <Wallet size={14} className="text-purple-300/70" />
+              <Wallet size={14} className="text-purple-300/90" />
             </div>
 
             <div className="mt-2 flex items-center gap-2">
-              <p className="min-w-0 flex-1 break-all font-mono text-[10px] leading-5 text-slate-400">
+              <p className="min-w-0 flex-1 break-all font-mono text-xs leading-5 text-slate-400">
                 {claim.claimant}
               </p>
 
@@ -658,12 +658,12 @@ function ClaimDetailModal({ claim, onClose }) {
           {/* ANALYSIS */}
           <GlassDetailBox>
             <div className="flex items-center justify-between gap-3">
-              <p className="text-[10px] uppercase tracking-[0.12em] text-slate-500">
+              <p className="text-xs uppercase tracking-[0.12em] text-slate-300">
                 Hasil Analisis
               </p>
 
               <span
-                className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] font-medium ${verdict.badge}`}
+                className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium ${verdict.badge}`}
               >
                 <verdict.icon size={11} />
                 {verdict.label}
@@ -672,13 +672,13 @@ function ClaimDetailModal({ claim, onClose }) {
 
             <div className="mt-5 flex items-end justify-between gap-5">
               <div>
-                <p className="text-[10px] text-slate-500">
+                <p className="text-xs text-slate-400">
                   ELA Tamper Score
                 </p>
 
                 <p className="mt-1 text-2xl font-semibold text-white">
                   {claim.tamperScore}
-                  <span className="ml-1 text-xs font-normal text-slate-500">
+                  <span className="ml-1 text-xs font-normal text-slate-400">
                     / 100
                   </span>
                 </p>
@@ -696,23 +696,23 @@ function ClaimDetailModal({ claim, onClose }) {
           {/* BLOCKCHAIN */}
           <GlassDetailBox>
             <div className="flex items-center justify-between gap-3">
-              <p className="text-[10px] uppercase tracking-[0.12em] text-slate-500">
+              <p className="text-xs uppercase tracking-[0.12em] text-slate-300">
                 Blockchain Record
               </p>
 
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-300/10 bg-emerald-400/[0.06] px-2.5 py-1 text-[10px] text-emerald-300">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-300/10 bg-emerald-400/[0.06] px-2.5 py-1 text-xs text-emerald-300">
                 <CheckCircle2 size={11} />
                 Terdaftar
               </span>
             </div>
 
             <div className="mt-4">
-              <p className="text-[10px] text-slate-500">
+              <p className="text-xs text-slate-400">
                 Transaction Hash
               </p>
 
               <div className="mt-2 flex items-center gap-2">
-                <p className="min-w-0 flex-1 truncate font-mono text-[10px] text-slate-400">
+                <p className="min-w-0 flex-1 truncate font-mono text-xs text-slate-400">
                   {claim.txHash}
                 </p>
 
@@ -723,7 +723,7 @@ function ClaimDetailModal({ claim, onClose }) {
                 href={`${EXPLORER_URL}/tx/${claim.txHash}`}
                 target="_blank"
                 rel="noreferrer"
-                className="mt-3 inline-flex items-center gap-1.5 text-[10px] font-medium text-blue-300 transition hover:text-blue-200"
+                className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium text-blue-300 transition hover:text-blue-200"
               >
                 Lihat transaksi di BOT Chain
                 <ExternalLink size={11} />
@@ -732,14 +732,14 @@ function ClaimDetailModal({ claim, onClose }) {
 
             <div className="mt-4 border-t border-white/[0.07] pt-4">
               <div className="flex items-center justify-between">
-                <p className="text-[10px] text-slate-500">
+                <p className="text-xs text-slate-400">
                   Canonical Hash
                 </p>
 
                 <CopyButton value={claim.canonicalHash} />
               </div>
 
-              <p className="mt-2 break-all font-mono text-[9px] leading-5 text-slate-500">
+              <p className="mt-2 break-all font-mono text-xs leading-5 text-slate-400">
                 {claim.canonicalHash}
               </p>
             </div>
@@ -775,7 +775,7 @@ function DetailItem({ label, value }) {
   return (
     <div className="glass-panel rounded-xl p-3">
       <div className="relative z-10">
-        <p className="text-[10px] text-slate-500">{label}</p>
+        <p className="text-xs text-slate-400">{label}</p>
 
         <p className="mt-1.5 truncate text-xs font-medium text-slate-300">
           {value}
@@ -798,7 +798,7 @@ function CopyButton({ value }) {
     <button
       type="button"
       onClick={handleCopy}
-      className="shrink-0 rounded-lg p-1.5 text-slate-500 transition hover:bg-white/[0.06] hover:text-slate-200"
+      className="shrink-0 rounded-lg p-1.5 text-slate-400 transition hover:bg-white/[0.06] hover:text-slate-200"
       title="Salin"
     >
       <Copy size={13} />

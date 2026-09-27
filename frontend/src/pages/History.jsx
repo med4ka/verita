@@ -16,7 +16,7 @@ import {
   ArrowUpRight,
   Loader2,
 } from 'lucide-react'
-import { API_BASE } from '../config/contract'
+import { API_BASE, BOT_CHAIN } from '../config/contract'
 import { getCurrentWallet } from '../services/wallet'
 
 function History() {
@@ -147,7 +147,7 @@ function History() {
 
       <div className="mb-6">
 
-        <p className="mb-1 text-xs font-medium uppercase tracking-[0.18em] text-blue-300/60">
+        <p className="mb-1 text-xs font-medium uppercase tracking-[0.18em] text-blue-300/85">
           Aktivitas Klaim
         </p>
 
@@ -158,7 +158,7 @@ function History() {
               History
             </h1>
 
-            <p className="mt-2 text-sm text-slate-300/60">
+            <p className="mt-2 text-sm text-slate-300/85">
               Lihat seluruh nota yang pernah
               kamu analisis dan daftarkan.
             </p>
@@ -173,7 +173,7 @@ function History() {
             </div>
 
             <div>
-              <p className="text-[10px] uppercase tracking-wider text-slate-600">
+              <p className="text-xs uppercase tracking-wider text-slate-300">
                 Wallet Aktif
               </p>
 
@@ -266,7 +266,7 @@ function History() {
               Riwayat Klaim
             </h2>
 
-            <p className="mt-1 text-xs text-slate-500">
+            <p className="mt-1 text-xs text-slate-400">
               {filteredHistory.length}{' '}
               dari {history.length}{' '}
               klaim ditampilkan
@@ -281,7 +281,7 @@ function History() {
 
               <Search
                 size={15}
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600"
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
               />
 
               <input
@@ -293,7 +293,7 @@ function History() {
                   )
                 }
                 placeholder="Cari nota atau toko..."
-                className="h-10 w-full rounded-xl border border-white/[0.10] bg-white/[0.035] pl-9 pr-4 text-xs text-white outline-none backdrop-blur-xl transition placeholder:text-slate-600 focus:border-blue-300/30 focus:bg-white/[0.055] sm:w-56"
+                className="h-10 w-full rounded-xl border border-white/[0.10] bg-white/[0.035] pl-9 pr-4 text-sm text-white outline-none backdrop-blur-xl transition placeholder:text-slate-400 focus:border-blue-300/30 focus:bg-white/[0.055] sm:w-56"
               />
 
             </div>
@@ -304,7 +304,7 @@ function History() {
 
               <Filter
                 size={14}
-                className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-600"
+                className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
               />
 
               <select
@@ -314,7 +314,7 @@ function History() {
                     event.target.value
                   )
                 }
-                className="h-10 w-full appearance-none rounded-xl border border-white/[0.10] bg-slate-900/40 pl-9 pr-8 text-xs text-slate-300 outline-none backdrop-blur-xl sm:w-44"
+                className="h-10 w-full appearance-none rounded-xl border border-white/[0.10] bg-slate-900/40 pl-9 pr-8 text-sm text-slate-300 outline-none backdrop-blur-xl sm:w-44"
               >
                 <option value="all">
                   Semua hasil
@@ -346,7 +346,7 @@ function History() {
                     event.target.value
                   )
                 }
-                className="h-10 w-full appearance-none rounded-xl border border-white/[0.10] bg-slate-900/40 px-4 pr-8 text-xs text-slate-300 outline-none backdrop-blur-xl sm:w-40"
+                className="h-10 w-full appearance-none rounded-xl border border-white/[0.10] bg-slate-900/40 px-4 pr-8 text-sm text-slate-300 outline-none backdrop-blur-xl sm:w-40"
               >
                 <option value="all">
                   Semua status
@@ -384,31 +384,31 @@ function History() {
               <thead>
                 <tr className="border-b border-white/[0.08] bg-white/[0.025]">
 
-                  <th className="px-5 py-4 text-left text-[10px] font-medium uppercase tracking-wider text-slate-600">
+                  <th className="px-5 py-4 text-left text-sm font-medium uppercase tracking-wider text-slate-300">
                     Nota
                   </th>
 
-                  <th className="px-5 py-4 text-left text-[10px] font-medium uppercase tracking-wider text-slate-600">
+                  <th className="px-5 py-4 text-left text-sm font-medium uppercase tracking-wider text-slate-300">
                     Tanggal
                   </th>
 
-                  <th className="px-5 py-4 text-left text-[10px] font-medium uppercase tracking-wider text-slate-600">
+                  <th className="px-5 py-4 text-left text-sm font-medium uppercase tracking-wider text-slate-300">
                     Toko
                   </th>
 
-                  <th className="px-5 py-4 text-right text-[10px] font-medium uppercase tracking-wider text-slate-600">
+                  <th className="px-5 py-4 text-right text-sm font-medium uppercase tracking-wider text-slate-300">
                     Nominal
                   </th>
 
-                  <th className="px-5 py-4 text-left text-[10px] font-medium uppercase tracking-wider text-slate-600">
+                  <th className="px-5 py-4 text-left text-sm font-medium uppercase tracking-wider text-slate-300">
                     Analisis
                   </th>
 
-                  <th className="px-5 py-4 text-left text-[10px] font-medium uppercase tracking-wider text-slate-600">
+                  <th className="px-5 py-4 text-left text-sm font-medium uppercase tracking-wider text-slate-300">
                     Blockchain
                   </th>
 
-                  <th className="px-5 py-4 text-right text-[10px] font-medium uppercase tracking-wider text-slate-600">
+                  <th className="px-5 py-4 text-right text-sm font-medium uppercase tracking-wider text-slate-300">
                     Detail
                   </th>
 
@@ -425,7 +425,7 @@ function History() {
                       className="px-5 py-20 text-center"
                     >
 
-                      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.03] text-slate-600">
+                      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.03] text-slate-400">
                         <Search size={22} />
                       </div>
 
@@ -433,7 +433,7 @@ function History() {
                         Tidak ada klaim ditemukan
                       </p>
 
-                      <p className="mt-1 text-xs text-slate-600">
+                      <p className="mt-1 text-xs text-slate-400">
                         Coba ubah pencarian atau
                         filter.
                       </p>
@@ -528,7 +528,7 @@ function SummaryCard({
 
       </div>
 
-      <p className="mt-4 text-[11px] text-slate-600">
+      <p className="mt-4 text-xs text-slate-300">
         {label}
       </p>
 
@@ -539,7 +539,7 @@ function SummaryCard({
         </span>
 
         {suffix && (
-          <span className="text-[10px] text-slate-600">
+          <span className="text-xs text-slate-400">
             {suffix}
           </span>
         )}
@@ -584,7 +584,7 @@ function HistoryRow({
               {item.receiptNumber}
             </p>
 
-            <p className="mt-0.5 text-[10px] text-slate-600">
+            <p className="mt-0.5 text-xs text-slate-400">
               ID #{item.id}
             </p>
           </div>
@@ -601,7 +601,7 @@ function HistoryRow({
 
           <CalendarDays
             size={13}
-            className="text-slate-600"
+            className="text-slate-400"
           />
 
           {formatDate(
@@ -620,7 +620,7 @@ function HistoryRow({
 
           <Store
             size={13}
-            className="text-slate-600"
+            className="text-slate-400"
           />
 
           <span className="text-xs text-slate-400">
@@ -650,7 +650,7 @@ function HistoryRow({
         <div className="flex items-center gap-2">
 
           <span
-            className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] ${verdict.badge}`}
+            className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs ${verdict.badge}`}
           >
             <verdict.icon size={11} />
             {verdict.label}
@@ -681,7 +681,7 @@ function HistoryRow({
             event.stopPropagation()
             onClick()
           }}
-          className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-transparent text-slate-600 transition hover:border-white/10 hover:bg-white/[0.05] hover:text-slate-300"
+          className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-transparent text-slate-400 transition hover:border-white/10 hover:bg-white/[0.05] hover:text-slate-300"
         >
           <ArrowUpRight
             size={15}
@@ -703,7 +703,7 @@ function BlockchainBadge({
 }) {
   if (status === 'registered') {
     return (
-      <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-300/10 bg-emerald-400/[0.06] px-2.5 py-1 text-[10px] text-emerald-300">
+      <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-300/10 bg-emerald-400/[0.06] px-2.5 py-1 text-xs text-emerald-300">
         <CheckCircle2 size={11} />
         Terdaftar
       </span>
@@ -712,7 +712,7 @@ function BlockchainBadge({
 
   if (status === 'rejected_duplicate') {
     return (
-      <span className="inline-flex items-center gap-1.5 rounded-full border border-red-300/10 bg-red-400/[0.06] px-2.5 py-1 text-[10px] text-red-300">
+      <span className="inline-flex items-center gap-1.5 rounded-full border border-red-300/10 bg-red-400/[0.06] px-2.5 py-1 text-xs text-red-300">
         <ShieldAlert size={11} />
         Duplikat
       </span>
@@ -720,7 +720,7 @@ function BlockchainBadge({
   }
 
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-300/10 bg-amber-400/[0.06] px-2.5 py-1 text-[10px] text-amber-300">
+    <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-300/10 bg-amber-400/[0.06] px-2.5 py-1 text-xs text-amber-300">
       <Clock3 size={11} />
       Pending
     </span>
@@ -769,7 +769,7 @@ function DetailModal({
                 Detail Klaim
               </h2>
 
-              <p className="mt-0.5 text-xs text-slate-600">
+              <p className="mt-0.5 text-xs text-slate-400">
                 Receipt #{receipt.id}
               </p>
 
@@ -779,7 +779,7 @@ function DetailModal({
 
           <button
             onClick={onClose}
-            className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/[0.03] text-slate-500 transition hover:bg-white/[0.07] hover:text-white"
+            className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/[0.03] text-slate-400 transition hover:bg-white/[0.07] hover:text-white"
           >
             <X size={16} />
           </button>
@@ -822,7 +822,7 @@ function DetailModal({
 
         <div className="mt-4 rounded-2xl border border-white/[0.10] bg-white/[0.025] p-4">
 
-          <p className="text-[10px] uppercase tracking-wider text-slate-600">
+          <p className="text-xs uppercase tracking-wider text-slate-300">
             Hasil Analisis
           </p>
 
@@ -840,7 +840,7 @@ function DetailModal({
 
             <span className="text-sm font-semibold text-white">
               {receipt.tamperScore}
-              <span className="text-xs font-normal text-slate-600">
+              <span className="text-xs font-normal text-slate-400">
                 {' '}
                 / 100
               </span>
@@ -856,7 +856,7 @@ function DetailModal({
 
           <div className="flex items-center justify-between">
 
-            <p className="text-[10px] uppercase tracking-wider text-slate-600">
+            <p className="text-xs uppercase tracking-wider text-slate-300">
               Status Blockchain
             </p>
 
@@ -871,13 +871,13 @@ function DetailModal({
           {receipt.txHash && (
             <div className="mt-4">
 
-              <p className="text-[10px] text-slate-600">
+              <p className="text-xs text-slate-400">
                 Transaction Hash
               </p>
 
               <div className="mt-2 flex items-center gap-2">
 
-                <p className="min-w-0 flex-1 truncate font-mono text-[10px] text-slate-400">
+                <p className="min-w-0 flex-1 truncate font-mono text-xs text-slate-400">
                   {receipt.txHash}
                 </p>
 
@@ -887,7 +887,7 @@ function DetailModal({
                       receipt.txHash
                     )
                   }
-                  className="shrink-0 text-slate-600 transition hover:text-slate-300"
+                  className="shrink-0 text-slate-400 transition hover:text-slate-300"
                 >
                   <Copy size={13} />
                 </button>
@@ -895,10 +895,10 @@ function DetailModal({
               </div>
 
               <a
-                href={`https://scan.bohr.life/tx/${receipt.txHash}`}
+                href={`${BOT_CHAIN.blockExplorerUrls[0]}/tx/${receipt.txHash}`}
                 target="_blank"
                 rel="noreferrer"
-                className="mt-3 inline-flex items-center gap-1.5 text-[10px] text-blue-300 transition hover:text-blue-200"
+                className="mt-3 inline-flex items-center gap-1.5 text-xs text-blue-300 transition hover:text-blue-200"
               >
                 Buka di Explorer
                 <ExternalLink
@@ -917,7 +917,7 @@ function DetailModal({
 
           <div className="flex items-center justify-between">
 
-            <p className="text-[10px] uppercase tracking-wider text-slate-600">
+            <p className="text-xs uppercase tracking-wider text-slate-300">
               Canonical Hash
             </p>
 
@@ -927,14 +927,14 @@ function DetailModal({
                   receipt.canonicalHash
                 )
               }
-              className="text-slate-600 transition hover:text-slate-300"
+              className="text-slate-400 transition hover:text-slate-300"
             >
               <Copy size={13} />
             </button>
 
           </div>
 
-          <p className="mt-2 break-all font-mono text-[9px] leading-5 text-slate-500">
+          <p className="mt-2 break-all font-mono text-xs leading-5 text-slate-400">
             {receipt.canonicalHash}
           </p>
 
@@ -964,7 +964,7 @@ function DetailItem({
   return (
     <div className="rounded-xl border border-white/[0.08] bg-white/[0.025] p-3">
 
-      <p className="text-[10px] text-slate-600">
+      <p className="text-xs text-slate-400">
         {label}
       </p>
 
