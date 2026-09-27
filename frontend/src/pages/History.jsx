@@ -17,14 +17,14 @@ import {
   Loader2,
 } from 'lucide-react'
 import { API_BASE, BOT_CHAIN } from '../config/contract'
-import { getCurrentWallet } from '../services/wallet'
+import { useWallet } from '../context/WalletContext'
 
 function History() {
+  const { wallet } = useWallet()
   const [search, setSearch] = useState('')
   const [history, setHistory] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
-  const [walletAddress, setWalletAddress] = useState(null)
   const [verdictFilter, setVerdictFilter] =
     useState('all')
   const [statusFilter, setStatusFilter] =
@@ -39,20 +39,15 @@ function History() {
 
   useEffect(() => {
     async function load() {
+      if (!wallet) {
+        setHistory([])
+        return
+      }
+
       setLoading(true)
       setError(null)
 
       try {
-        const wallet = await getCurrentWallet()
-
-        if (!wallet) {
-          setHistory([])
-          setWalletAddress(null)
-          return
-        }
-
-        setWalletAddress(wallet.address)
-
         const res = await fetch(
           `${API_BASE}/api/receipts?wallet=${wallet.address.toLowerCase()}`
         )
@@ -83,7 +78,7 @@ function History() {
     }
 
     load()
-  }, [])
+  }, [wallet])
 
   const filteredHistory = useMemo(() => {
     return history.filter((item) => {
@@ -178,8 +173,8 @@ function History() {
               </p>
 
               <p className="mt-0.5 font-mono text-xs text-slate-300">
-                {walletAddress
-                  ? shortWallet(walletAddress)
+                {wallet
+                  ? shortWallet(wallet.address)
                   : 'Tidak terhubung'}
               </p>
             </div>
@@ -195,14 +190,14 @@ function History() {
       ====================================================== */}
 
       {loading && (
-        <div className="mb-5 flex items-center gap-3 rounded-2xl border border-white/10 bg-slate-900/25 px-4 py-3 text-sm text-slate-300 backdrop-blur-xl">
+        <div className="mb-5 flex items-center gap-3 rounded-2xl border-[3px] border-blue-400/50 border-l-4 border-l-blue-500 bg-slate-900/25 px-4 py-3 text-sm text-slate-300 shadow-[0_0_24px_rgba(59,130,246,0.35)] backdrop-blur-xl">
           <Loader2 size={17} className="animate-spin text-blue-300" />
           Memuat history klaim...
         </div>
       )}
 
       {error && (
-        <div className="mb-5 flex items-start gap-3 rounded-2xl border border-red-300/10 bg-red-400/[0.06] px-4 py-3 text-sm text-red-200 backdrop-blur-xl">
+        <div className="mb-5 flex items-start gap-3 rounded-2xl border-[3px] border-red-400/50 border-l-4 border-l-red-500 bg-red-400/[0.06] shadow-[0_0_24px_rgba(239,68,68,0.35)] px-4 py-3 text-sm text-red-200 backdrop-blur-xl">
           <AlertTriangle
             size={17}
             className="mt-0.5 shrink-0 text-red-300"
@@ -293,7 +288,7 @@ function History() {
                   )
                 }
                 placeholder="Cari nota atau toko..."
-                className="h-10 w-full rounded-xl border border-white/[0.10] bg-white/[0.035] pl-9 pr-4 text-sm text-white outline-none backdrop-blur-xl transition placeholder:text-slate-400 focus:border-blue-300/30 focus:bg-white/[0.055] sm:w-56"
+                className="h-10 w-full rounded-xl border border-white/[0.10] bg-white/[0.035] pl-9 pr-4 text-sm text-white outline-none backdrop-blur-xl transition placeholder:text-slate-400 focus:border-blue-400/50 focus:ring-2 focus:ring-blue-400/50 focus:bg-white/[0.055] sm:w-56"
               />
 
             </div>
@@ -314,7 +309,7 @@ function History() {
                     event.target.value
                   )
                 }
-                className="h-10 w-full appearance-none rounded-xl border border-white/[0.10] bg-slate-900/40 pl-9 pr-8 text-sm text-slate-300 outline-none backdrop-blur-xl sm:w-44"
+                className="h-10 w-full appearance-none rounded-xl border border-white/[0.10] bg-slate-900/40 pl-9 pr-8 text-sm text-slate-300 outline-none transition backdrop-blur-xl focus:border-blue-400/50 focus:ring-2 focus:ring-blue-400/50 sm:w-44"
               >
                 <option value="all">
                   Semua hasil
@@ -346,7 +341,7 @@ function History() {
                     event.target.value
                   )
                 }
-                className="h-10 w-full appearance-none rounded-xl border border-white/[0.10] bg-slate-900/40 px-4 pr-8 text-sm text-slate-300 outline-none backdrop-blur-xl sm:w-40"
+                className="h-10 w-full appearance-none rounded-xl border border-white/[0.10] bg-slate-900/40 px-4 pr-8 text-sm text-slate-300 outline-none transition backdrop-blur-xl focus:border-blue-400/50 focus:ring-2 focus:ring-blue-400/50 sm:w-40"
               >
                 <option value="all">
                   Semua status

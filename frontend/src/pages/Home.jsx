@@ -16,6 +16,7 @@ import {
   ExternalLink,
 } from 'lucide-react'
 import { API_BASE, BOT_CHAIN } from '../config/contract'
+import { useWallet } from '../context/WalletContext'
 import {
   connectWallet,
   getContract,
@@ -23,13 +24,25 @@ import {
   switchToBotChain,
 } from '../services/wallet'
 
+const glassButtonStyle = {
+  background:
+    'linear-gradient(135deg, rgba(59,130,246,0.75) 0%, rgba(37,99,235,0.65) 100%)',
+  backdropFilter: 'blur(16px) saturate(140%)',
+  WebkitBackdropFilter: 'blur(16px) saturate(140%)',
+  border: '1.5px solid rgba(147,197,253,0.35)',
+  boxShadow:
+    '0 8px 32px rgba(59,130,246,0.25), inset 0 1px 0 rgba(255,255,255,0.18), inset 0 -1px 0 rgba(0,0,0,0.1)',
+  color: '#fff',
+  transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+}
+
 function Home() {
   const fileInputRef = useRef(null)
 
   const [file, setFile] = useState(null)
   const [preview, setPreview] = useState(null)
 
-  const [wallet, setWallet] = useState(null)
+  const { wallet, setWallet } = useWallet()
   const [receiptId, setReceiptId] = useState(null)
 
   const [form, setForm] = useState({
@@ -392,7 +405,7 @@ function Home() {
       ====================================================== */}
 
       {error && (
-        <div className="mb-5 flex items-start gap-3 rounded-2xl border border-red-300/10 bg-red-400/[0.06] px-4 py-3 text-sm text-red-200 backdrop-blur-xl">
+        <div className="mb-5 flex items-start gap-3 rounded-2xl border-[3px] border-red-400/50 border-l-4 border-l-red-500 bg-red-400/[0.06] shadow-[0_0_24px_rgba(239,68,68,0.35)] px-4 py-3 text-sm text-red-200 backdrop-blur-xl">
 
           <AlertTriangle
             size={17}
@@ -460,7 +473,7 @@ function Home() {
                 event.preventDefault()
               }
               onDrop={handleDrop}
-              className="group flex min-h-[300px] cursor-pointer flex-col items-center justify-center rounded-2xl border border-white/15 bg-slate-900/25 px-6 text-center backdrop-blur-xl transition hover:border-blue-300/25 hover:bg-blue-400/[0.05]"
+              className="group flex min-h-[300px] cursor-pointer flex-col items-center justify-center rounded-2xl border border-white/15 bg-slate-900/25 px-6 text-center backdrop-blur-xl transition hover:border-blue-300/40 hover:bg-blue-400/[0.05] hover:shadow-[0_0_24px_rgba(59,130,246,0.35)]"
             >
 
               <input
@@ -590,7 +603,8 @@ function Home() {
           <button
             onClick={handleAnalyze}
             disabled={analyzing}
-            className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-blue-500 px-5 py-3.5 text-sm font-semibold text-white shadow-lg shadow-blue-500/20 transition hover:bg-blue-400 disabled:cursor-not-allowed disabled:opacity-60"
+            className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl px-5 py-3.5 text-sm font-semibold text-white transition hover:brightness-110 hover:shadow-[0_12px_40px_rgba(59,130,246,0.4)]! disabled:cursor-not-allowed disabled:opacity-60"
+            style={glassButtonStyle}
           >
             {analyzing ? (
               <>
@@ -725,7 +739,7 @@ function Home() {
               {/* Verdict */}
 
               <div
-                className={`rounded-2xl border p-5 ${verdictConfig.container}`}
+                className={`rounded-2xl p-5 ${verdictConfig.container}`}
               >
 
                 <div className="flex items-start gap-3">
@@ -758,10 +772,10 @@ function Home() {
 
               {duplicate && (
                 <div
-                  className={`rounded-2xl border p-5 ${
+                  className={`rounded-2xl p-5 ${
                     duplicate.isClaimed
-                      ? 'border-red-300/15 bg-red-400/[0.05]'
-                      : 'border-emerald-300/10 bg-emerald-400/[0.035]'
+                      ? 'border-[3px] border-red-400/50 border-l-4 border-l-red-500 bg-red-400/[0.05] shadow-[0_0_24px_rgba(239,68,68,0.35)]'
+                      : 'border-[3px] border-emerald-400/50 border-l-4 border-l-emerald-500 bg-emerald-400/[0.04] shadow-[0_0_24px_rgba(16,185,129,0.30)]'
                   }`}
                 >
 
@@ -832,9 +846,14 @@ function Home() {
                 }
                 className={`flex w-full items-center justify-center gap-2 rounded-xl px-5 py-3.5 text-sm font-semibold transition ${
                   duplicate?.isClaimed
-                    ? 'border border-red-300/15 bg-red-400/10 text-red-200 hover:bg-red-400/15'
-                    : 'bg-blue-500 text-white shadow-lg shadow-blue-500/20 hover:bg-blue-400'
+                    ? 'border-2 border-red-400/40 bg-red-400/10 text-red-200 shadow-[0_0_24px_rgba(239,68,68,0.35)] hover:bg-red-400/15'
+                    : 'text-white hover:brightness-110 hover:shadow-[0_12px_40px_rgba(59,130,246,0.4)]!'
                 } disabled:cursor-not-allowed disabled:opacity-50`}
+                style={
+                  duplicate?.isClaimed
+                    ? undefined
+                    : glassButtonStyle
+                }
               >
                 {registering ? (
                   <>
@@ -913,7 +932,7 @@ function Home() {
         >
 
           <div
-            className="group flex min-h-[300px] cursor-pointer flex-col items-center justify-center rounded-2xl border border-white/15 bg-slate-900/25 px-6 text-center backdrop-blur-xl transition hover:border-blue-300/25 hover:bg-blue-400/[0.05]"
+            className="group flex min-h-[300px] cursor-pointer flex-col items-center justify-center rounded-2xl border-[3px] border-emerald-400/50 border-l-4 border-l-emerald-500 bg-slate-900/25 px-6 text-center backdrop-blur-xl transition shadow-[0_0_24px_rgba(16,185,129,0.30)] hover:border-emerald-300/50 hover:bg-emerald-400/[0.05]"
             onClick={(event) =>
               event.stopPropagation()
             }
@@ -954,7 +973,8 @@ function Home() {
                 href={`${BOT_CHAIN.blockExplorerUrls[0]}/tx/${txHash}`}
                 target="_blank"
                 rel="noreferrer"
-                className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-xs font-medium text-slate-300 transition hover:bg-white/[0.08] hover:text-white"
+                className="flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-3 text-xs font-medium text-white transition hover:brightness-110 hover:shadow-[0_12px_40px_rgba(59,130,246,0.4)]!"
+                style={glassButtonStyle}
               >
                 Buka Explorer
                 <ExternalLink size={14} />
@@ -964,7 +984,8 @@ function Home() {
                 onClick={() =>
                   setShowSuccess(false)
                 }
-                className="flex-1 rounded-xl bg-blue-500 px-4 py-3 text-xs font-semibold text-white shadow-lg shadow-blue-500/20 transition hover:bg-blue-400"
+                className="flex-1 rounded-xl px-4 py-3 text-xs font-semibold text-white transition hover:brightness-110 hover:shadow-[0_12px_40px_rgba(59,130,246,0.4)]!"
+                style={glassButtonStyle}
               >
                 Selesai
               </button>
@@ -989,7 +1010,7 @@ function Home() {
         >
 
           <div
-            className="w-full max-w-md rounded-3xl border border-red-300/15 bg-slate-950/90 p-6 shadow-2xl shadow-black/50 backdrop-blur-2xl"
+            className="w-full max-w-md rounded-2xl border-[3px] border-red-400/50 border-l-4 border-l-red-500 bg-slate-950/90 p-6 shadow-[0_0_20px_rgba(239,68,68,0.15),0_25px_50px_-12px_rgba(0,0,0,0.5)] backdrop-blur-2xl"
             onClick={(event) =>
               event.stopPropagation()
             }
@@ -1079,7 +1100,7 @@ function InputField({
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className="w-full rounded-xl border border-white/10 bg-slate-900/30 backdrop-blur-xl px-4 py-3 text-sm text-white outline-none transition placeholder:text-slate-400 focus:border-blue-400/40 focus:bg-white/[0.055] focus:ring-2 focus:ring-blue-500/10"
+        className="w-full rounded-xl border border-white/10 bg-slate-900/30 backdrop-blur-xl px-4 py-3 text-sm text-white outline-none transition placeholder:text-slate-400 focus:border-blue-400/50 focus:bg-white/[0.055] focus:ring-2 focus:ring-blue-400/50"
       />
 
     </label>
@@ -1101,7 +1122,7 @@ function getVerdictConfig(verdict) {
       iconColor: 'text-red-300',
       text: 'text-red-200',
       container:
-        'border-red-300/15 bg-red-400/[0.045]',
+        'border-[3px] border-red-400/50 border-l-4 border-l-red-500 bg-red-400/[0.06] shadow-[0_0_24px_rgba(239,68,68,0.35)]',
       bar: 'bg-red-400',
     }
   }
@@ -1116,7 +1137,7 @@ function getVerdictConfig(verdict) {
       iconColor: 'text-amber-300',
       text: 'text-amber-200',
       container:
-        'border-amber-300/15 bg-amber-400/[0.045]',
+        'border-[3px] border-amber-400/50 border-l-4 border-l-amber-400 bg-amber-400/[0.06] shadow-[0_0_24px_rgba(251,191,36,0.30)]',
       bar: 'bg-amber-400',
     }
   }
@@ -1130,7 +1151,7 @@ function getVerdictConfig(verdict) {
     iconColor: 'text-emerald-300',
     text: 'text-emerald-200',
     container:
-      'border-emerald-300/15 bg-emerald-400/[0.045]',
+      'border-[3px] border-emerald-400/50 border-l-4 border-l-emerald-500 bg-emerald-400/[0.05] shadow-[0_0_24px_rgba(16,185,129,0.30)]',
     bar: 'bg-emerald-400',
   }
 }

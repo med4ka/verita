@@ -87,7 +87,7 @@ function Layout() {
             className={({ isActive }) =>
               `flex items-center gap-3 rounded-xl px-4 py-3 text-sm transition ${
                 isActive
-                  ? 'border border-blue-400/20 bg-blue-500/20 text-white'
+                  ? 'border border-blue-400/40 bg-blue-500/20 text-white'
                   : 'text-slate-400 hover:bg-white/5 hover:text-white'
               }`
             }
@@ -101,7 +101,7 @@ function Layout() {
             className={({ isActive }) =>
               `flex items-center gap-3 rounded-xl px-4 py-3 text-sm transition ${
                 isActive
-                  ? 'border border-blue-400/20 bg-blue-500/20 text-white'
+                  ? 'border border-blue-400/40 bg-blue-500/20 text-white'
                   : 'text-slate-400 hover:bg-white/5 hover:text-white'
               }`
             }
@@ -115,7 +115,7 @@ function Layout() {
             className={({ isActive }) =>
               `flex items-center gap-3 rounded-xl px-4 py-3 text-sm transition ${
                 isActive
-                  ? 'border border-blue-400/20 bg-blue-500/20 text-white'
+                  ? 'border border-blue-400/40 bg-blue-500/20 text-white'
                   : 'text-slate-400 hover:bg-white/5 hover:text-white'
               }`
             }
