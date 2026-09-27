@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { Outlet, NavLink } from 'react-router-dom'
-import { Home, History, Search } from 'lucide-react'
+import { Home, History, Search, ExternalLink } from 'lucide-react'
 
 function Layout() {
   const videoRef = useRef(null)
@@ -129,8 +129,26 @@ function Layout() {
         {/* Footer */}
         <div className="absolute bottom-5 left-5 right-5 border-t border-white/10 pt-4">
           <p className="text-xs text-slate-400">
-            Powered by BOT Chain
+            Powered by{' '}
+            <a
+              href="https://botchain.ai"
+              target="_blank"
+              rel="noreferrer"
+              className="underline-offset-4 transition hover:text-white hover:underline"
+            >
+              BOT Chain
+            </a>
           </p>
+
+          <a
+            href="https://scan.botchain.ai"
+            target="_blank"
+            rel="noreferrer"
+            className="mt-1 inline-flex items-center gap-1 text-xs text-slate-400 transition hover:text-white"
+          >
+            Explorer
+            <ExternalLink size={11} />
+          </a>
         </div>
 
       </aside>
