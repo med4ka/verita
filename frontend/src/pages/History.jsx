@@ -190,14 +190,14 @@ function History() {
       ====================================================== */}
 
       {loading && (
-        <div className="mb-5 flex items-center gap-3 rounded-2xl border-[3px] border-blue-400/50 border-l-4 border-l-blue-500 bg-slate-900/25 px-4 py-3 text-sm text-slate-300 shadow-[0_0_24px_rgba(59,130,246,0.35)] backdrop-blur-xl">
+        <div className="mb-5 flex items-center gap-3 rounded-2xl border-[3px] border-blue-400/60 border-l-[6px] border-l-blue-500 bg-slate-900/25 px-4 py-3 text-sm text-slate-300 shadow-[0_0_40px_rgba(59,130,246,0.4)] backdrop-blur-xl">
           <Loader2 size={17} className="animate-spin text-blue-300" />
           Memuat history klaim...
         </div>
       )}
 
       {error && (
-        <div className="mb-5 flex items-start gap-3 rounded-2xl border-[3px] border-red-400/50 border-l-4 border-l-red-500 bg-red-400/[0.06] shadow-[0_0_24px_rgba(239,68,68,0.35)] px-4 py-3 text-sm text-red-200 backdrop-blur-xl">
+        <div className="mb-5 flex items-start gap-3 rounded-2xl border-[3px] border-red-400/60 border-l-[6px] border-l-red-500 bg-red-400/[0.06] shadow-[0_0_40px_rgba(239,68,68,0.4)] px-4 py-3 text-sm text-red-200 backdrop-blur-xl">
           <AlertTriangle
             size={17}
             className="mt-0.5 shrink-0 text-red-300"
@@ -742,7 +742,7 @@ function DetailModal({
     >
 
       <div
-        className="glass-panel w-full max-w-lg rounded-3xl p-6 shadow-2xl"
+        className="glass-panel w-full max-w-lg rounded-2xl border-[3px]! p-6 shadow-2xl! shadow-blue-500/40"
         onClick={(event) =>
           event.stopPropagation()
         }

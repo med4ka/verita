@@ -405,7 +405,7 @@ function Home() {
       ====================================================== */}
 
       {error && (
-        <div className="mb-5 flex items-start gap-3 rounded-2xl border-[3px] border-red-400/50 border-l-4 border-l-red-500 bg-red-400/[0.06] shadow-[0_0_24px_rgba(239,68,68,0.35)] px-4 py-3 text-sm text-red-200 backdrop-blur-xl">
+        <div className="mb-5 flex items-start gap-3 rounded-2xl border-[3px] border-red-400/60 border-l-[6px] border-l-red-500 bg-red-400/[0.06] shadow-[0_0_40px_rgba(239,68,68,0.4)] px-4 py-3 text-sm text-red-200 backdrop-blur-xl">
 
           <AlertTriangle
             size={17}
@@ -774,8 +774,8 @@ function Home() {
                 <div
                   className={`rounded-2xl p-5 ${
                     duplicate.isClaimed
-                      ? 'border-[3px] border-red-400/50 border-l-4 border-l-red-500 bg-red-400/[0.05] shadow-[0_0_24px_rgba(239,68,68,0.35)]'
-                      : 'border-[3px] border-emerald-400/50 border-l-4 border-l-emerald-500 bg-emerald-400/[0.04] shadow-[0_0_24px_rgba(16,185,129,0.30)]'
+                      ? 'border-[3px] border-red-400/60 border-l-[6px] border-l-red-500 bg-red-400/[0.05] shadow-[0_0_40px_rgba(239,68,68,0.4)]'
+                      : 'border-[3px] border-emerald-400/60 border-l-[6px] border-l-emerald-500 bg-emerald-400/[0.04] shadow-[0_0_40px_rgba(16,185,129,0.4)]'
                   }`}
                 >
 
@@ -846,7 +846,7 @@ function Home() {
                 }
                 className={`flex w-full items-center justify-center gap-2 rounded-xl px-5 py-3.5 text-sm font-semibold transition ${
                   duplicate?.isClaimed
-                    ? 'border-2 border-red-400/40 bg-red-400/10 text-red-200 shadow-[0_0_24px_rgba(239,68,68,0.35)] hover:bg-red-400/15'
+                    ? 'border-2 border-red-400/40 bg-red-400/10 text-red-200 shadow-[0_0_40px_rgba(239,68,68,0.4)] hover:bg-red-400/15'
                     : 'verita-primary text-white hover:brightness-110 hover:shadow-[0_12px_40px_rgba(59,130,246,0.4)]!'
                 } disabled:cursor-not-allowed disabled:opacity-50`}
                 style={
@@ -932,7 +932,7 @@ function Home() {
         >
 
           <div
-            className="group flex min-h-[300px] cursor-pointer flex-col items-center justify-center rounded-2xl border-[3px] border-emerald-400/50 border-l-4 border-l-emerald-500 bg-slate-900/25 px-6 text-center backdrop-blur-xl transition shadow-[0_0_24px_rgba(16,185,129,0.30)] hover:border-emerald-300/50 hover:bg-emerald-400/[0.05]"
+            className="group flex min-h-[300px] cursor-pointer flex-col items-center justify-center rounded-2xl border-[3px] border-emerald-400/60 border-l-[6px] border-l-emerald-500 bg-slate-900/25 px-6 text-center backdrop-blur-xl transition shadow-2xl shadow-emerald-500/40 hover:border-emerald-300/50 hover:bg-emerald-400/[0.05]"
             onClick={(event) =>
               event.stopPropagation()
             }
@@ -1010,7 +1010,7 @@ function Home() {
         >
 
           <div
-            className="w-full max-w-md rounded-2xl border-[3px] border-red-400/50 border-l-4 border-l-red-500 bg-slate-950/90 p-6 shadow-[0_0_20px_rgba(239,68,68,0.15),0_25px_50px_-12px_rgba(0,0,0,0.5)] backdrop-blur-2xl"
+            className="w-full max-w-md rounded-2xl border-[3px] border-red-400/60 border-l-[6px] border-l-red-500 bg-slate-950/90 p-6 shadow-2xl shadow-red-500/40 backdrop-blur-2xl"
             onClick={(event) =>
               event.stopPropagation()
             }
@@ -1122,7 +1122,7 @@ function getVerdictConfig(verdict) {
       iconColor: 'text-red-300',
       text: 'text-red-200',
       container:
-        'border-[3px] border-red-400/50 border-l-4 border-l-red-500 bg-red-400/[0.06] shadow-[0_0_24px_rgba(239,68,68,0.35)]',
+        'border-[3px] border-red-400/60 border-l-[6px] border-l-red-500 bg-red-400/[0.06] shadow-[0_0_40px_rgba(239,68,68,0.4)]',
       bar: 'bg-red-400',
     }
   }
@@ -1137,7 +1137,7 @@ function getVerdictConfig(verdict) {
       iconColor: 'text-amber-300',
       text: 'text-amber-200',
       container:
-        'border-[3px] border-amber-400/50 border-l-4 border-l-amber-400 bg-amber-400/[0.06] shadow-[0_0_24px_rgba(251,191,36,0.30)]',
+        'border-[3px] border-amber-400/60 border-l-[6px] border-l-amber-500 bg-amber-400/[0.06] shadow-[0_0_40px_rgba(251,191,36,0.4)]',
       bar: 'bg-amber-400',
     }
   }
@@ -1151,7 +1151,7 @@ function getVerdictConfig(verdict) {
     iconColor: 'text-emerald-300',
     text: 'text-emerald-200',
     container:
-      'border-[3px] border-emerald-400/50 border-l-4 border-l-emerald-500 bg-emerald-400/[0.05] shadow-[0_0_24px_rgba(16,185,129,0.30)]',
+      'border-[3px] border-emerald-400/60 border-l-[6px] border-l-emerald-500 bg-emerald-400/[0.05] shadow-[0_0_40px_rgba(16,185,129,0.4)]',
     bar: 'bg-emerald-400',
   }
 }
