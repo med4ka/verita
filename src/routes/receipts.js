@@ -1,6 +1,6 @@
 /**
  * File: src/routes/receipts.js
- * Description: GET /api/receipts, GET /api/receipts/check-duplicate, POST /api/receipts/:id/confirm-onchain per schema.md §3, rules.md R9/R11/R13. receiptId = SERIAL integer.
+ * Description: GET /api/receipts, GET /api/receipts/check-duplicate, GET /api/receipts/by-hash, POST /api/receipts/:id/confirm-onchain per schema.md §3, rules.md R9/R11/R13. receiptId = SERIAL integer.
  * Part of: API routes
  * Main dependencies: express, pg (via ../db)
  */
@@ -83,6 +83,52 @@ router.get('/receipts/check-duplicate', async (req, res, next) => {
       isClaimed: true,
       claimant: row.wallet_address,
       timestamp: Math.floor(new Date(row.created_at).getTime() / 1000),
+    });
+  } catch (err) {
+    return next(err);
+  }
+});
+
+/**
+ * GET /api/receipts/by-hash?hash=0x... — looks up a single receipt by canonical hash (used by Explorer enrichment).
+ *
+ * @param {object} req - Express request; query: hash (0x + 64 hex chars, canonicalHash)
+ * @param {object} res - Express response
+ * @param {function} next - Express next middleware
+ * @returns {void} Sends { receiptId, walletAddress, storeName, amount, verdict, canonicalHash, onchainStatus, txHash, createdAt },
+ *                 400 on invalid hash, 404 when not found
+ *
+ * Notes:
+ * - Mounted BEFORE any GET /receipts/:id route so "by-hash" is never treated as an id.
+ */
+// GET /api/receipts/by-hash?hash=0x... — static segment must stay before /receipts/:id
+router.get('/receipts/by-hash', async (req, res, next) => {
+  try {
+    const hash = req.query.hash;
+    if (!hash || !HASH_RE.test(String(hash))) {
+      return res.status(400).json({ error: 'invalid hash' });
+    }
+    const result = await query(
+      `SELECT id, wallet_address, store_name, amount, verdict, canonical_hash, onchain_status, onchain_tx_hash, created_at
+       FROM receipts
+       WHERE canonical_hash = $1
+       LIMIT 1`,
+      [String(hash).toLowerCase()]
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'not found' });
+    }
+    const row = result.rows[0];
+    return res.status(200).json({
+      receiptId: row.id,
+      walletAddress: row.wallet_address,
+      storeName: row.store_name,
+      amount: Number(row.amount),
+      verdict: row.verdict,
+      canonicalHash: row.canonical_hash,
+      onchainStatus: row.onchain_status,
+      txHash: row.onchain_tx_hash,
+      createdAt: row.created_at,
     });
   } catch (err) {
     return next(err);

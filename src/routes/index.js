@@ -14,7 +14,7 @@ const router = express.Router();
 // POST /api/analyze-receipt
 router.use('/', analyzeRouter);
 
-// GET /api/receipts & GET /api/receipts/check-duplicate (static route before :id)
+// GET /api/receipts & GET /api/receipts/check-duplicate & GET /api/receipts/by-hash (static route before :id)
 // POST /api/receipts/:id/confirm-onchain
 router.use('/', receiptsRouter);
 
