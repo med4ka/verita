@@ -1,0 +1,66 @@
+/* Button override — load TERAKHIR setelah index.css biar menang cascade */
+button.verita-primary,
+button[class*="verita-primary"],
+.btn-primary {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.7) 0%, rgba(37, 99, 235, 0.55) 100%) !important;
+  backdrop-filter: blur(16px) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(140%) !important;
+  border: 1.5px solid rgba(147, 197, 253, 0.5) !important;
+  box-shadow:
+    0 8px 32px rgba(59, 130, 246, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.15) !important;
+  color: #ffffff !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+button.verita-primary:hover,
+button[class*="verita-primary"]:hover,
+.btn-primary:hover {
+  background: linear-gradient(135deg, rgba(96, 165, 250, 0.85) 0%, rgba(59, 130, 246, 0.75) 100%) !important;
+  box-shadow:
+    0 12px 40px rgba(59, 130, 246, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+  transform: translateY(-1px) !important;
+  border-color: rgba(147, 197, 253, 0.7) !important;
+}
+
+button.verita-primary:active,
+button[class*="verita-primary"]:active,
+.btn-primary:active {
+  transform: translateY(0) scale(0.98) !important;
+}
+
+button.verita-primary:disabled,
+button[class*="verita-primary"]:disabled,
+.btn-primary:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+}
+
+/* Override paksa buat tombol yang masih kebawa Tailwind bg-blue */
+button.bg-blue-500,
+button.bg-blue-600,
+button.bg-blue-700,
+button[class*="bg-blue-5"],
+button[class*="bg-blue-6"],
+button[class*="bg-blue-7"] {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.7) 0%, rgba(37, 99, 235, 0.55) 100%) !important;
+  backdrop-filter: blur(16px) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(140%) !important;
+  border: 1.5px solid rgba(147, 197, 253, 0.5) !important;
+  box-shadow:
+    0 8px 32px rgba(59, 130, 246, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+}
+
+button.bg-blue-500:hover,
+button.bg-blue-600:hover,
+button.bg-blue-700:hover {
+  background: linear-gradient(135deg, rgba(96, 165, 250, 0.85) 0%, rgba(59, 130, 246, 0.75) 100%) !important;
+  box-shadow:
+    0 12px 40px rgba(59, 130, 246, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+  transform: translateY(-1px) !important;
+}

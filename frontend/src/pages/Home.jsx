@@ -603,7 +603,7 @@ function Home() {
           <button
             onClick={handleAnalyze}
             disabled={analyzing}
-            className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl px-5 py-3.5 text-sm font-semibold text-white transition hover:brightness-110 hover:shadow-[0_12px_40px_rgba(59,130,246,0.4)]! disabled:cursor-not-allowed disabled:opacity-60"
+            className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl verita-primary px-5 py-3.5 text-sm font-semibold text-white transition hover:brightness-110 hover:shadow-[0_12px_40px_rgba(59,130,246,0.4)]! disabled:cursor-not-allowed disabled:opacity-60"
             style={glassButtonStyle}
           >
             {analyzing ? (
@@ -847,7 +847,7 @@ function Home() {
                 className={`flex w-full items-center justify-center gap-2 rounded-xl px-5 py-3.5 text-sm font-semibold transition ${
                   duplicate?.isClaimed
                     ? 'border-2 border-red-400/40 bg-red-400/10 text-red-200 shadow-[0_0_24px_rgba(239,68,68,0.35)] hover:bg-red-400/15'
-                    : 'text-white hover:brightness-110 hover:shadow-[0_12px_40px_rgba(59,130,246,0.4)]!'
+                    : 'verita-primary text-white hover:brightness-110 hover:shadow-[0_12px_40px_rgba(59,130,246,0.4)]!'
                 } disabled:cursor-not-allowed disabled:opacity-50`}
                 style={
                   duplicate?.isClaimed
@@ -973,7 +973,7 @@ function Home() {
                 href={`${BOT_CHAIN.blockExplorerUrls[0]}/tx/${txHash}`}
                 target="_blank"
                 rel="noreferrer"
-                className="flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-3 text-xs font-medium text-white transition hover:brightness-110 hover:shadow-[0_12px_40px_rgba(59,130,246,0.4)]!"
+                className="btn-primary flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-3 text-xs font-medium text-white transition hover:brightness-110 hover:shadow-[0_12px_40px_rgba(59,130,246,0.4)]!"
                 style={glassButtonStyle}
               >
                 Buka Explorer
@@ -984,7 +984,7 @@ function Home() {
                 onClick={() =>
                   setShowSuccess(false)
                 }
-                className="flex-1 rounded-xl px-4 py-3 text-xs font-semibold text-white transition hover:brightness-110 hover:shadow-[0_12px_40px_rgba(59,130,246,0.4)]!"
+                className="flex-1 rounded-xl verita-primary px-4 py-3 text-xs font-semibold text-white transition hover:brightness-110 hover:shadow-[0_12px_40px_rgba(59,130,246,0.4)]!"
                 style={glassButtonStyle}
               >
                 Selesai
