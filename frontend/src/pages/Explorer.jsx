@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
   Search,
   Filter,
@@ -16,108 +16,12 @@ import {
   AlertTriangle,
   Blocks,
   ChevronDown,
+  Loader2,
 } from 'lucide-react'
+import { API_BASE, BOT_CHAIN } from '../config/contract'
+import { getContractReadOnly } from '../services/wallet'
 
-const EXPLORER_URL = 'https://scan.bohr.life'
-
-const DEMO_CLAIMS = [
-  {
-    id: 1,
-    receiptNumber: 'INV-2026-001',
-    storeName: 'Toko ABC',
-    amount: 250000,
-    receiptDate: '2026-09-24',
-    claimant: '0x742d35A4C8fB92e1D6A3B7C91F44E5A8',
-    timestamp: '2026-09-24T14:35:12',
-    verdict: 'clean',
-    tamperScore: 18,
-    status: 'registered',
-    txHash:
-      '0x71b8e2a6d4f9c3e1a7b5d8f2c6e0a4b9d3f7c1e5a8b2d6f0c4e9a3b7d1f5a9',
-    canonicalHash:
-      '0x8f3d91b9d0f7e5e1c4f9a72b8c6e2a1d9f0c3b5a7e8d1f2c4b6a8e0d2f4c6a8',
-  },
-  {
-    id: 2,
-    receiptNumber: 'INV-2026-002',
-    storeName: 'Kopi Senja',
-    amount: 185000,
-    receiptDate: '2026-09-23',
-    claimant: '0x91bA4D7f3E8c12A6B5D9F0e2C7a4B8D1',
-    timestamp: '2026-09-23T11:21:44',
-    verdict: 'suspicious',
-    tamperScore: 43,
-    status: 'registered',
-    txHash:
-      '0x4c9e7a2b8d1f6e3a5c0b9d7e2f8a4c1b6d3e9f5a7c2b8d4e0f6a1c9b3d7e5',
-    canonicalHash:
-      '0x9a7c4e2b1d8f6a3c5e0b9d2f7a4c8e1b6d3f9a5c7e2b8d4f0a1c6e9b3d5',
-  },
-  {
-    id: 3,
-    receiptNumber: 'INV-2026-003',
-    storeName: 'Stationery Hub',
-    amount: 125000,
-    receiptDate: '2026-09-21',
-    claimant: '0x5cA8e91B3D7f24C6A0e5B9d2F8c1A4',
-    timestamp: '2026-09-21T16:48:09',
-    verdict: 'clean',
-    tamperScore: 11,
-    status: 'registered',
-    txHash:
-      '0x2a8f5c1d9e4b7a3f0c6d8e2b5a1f9c4d7e3b6a0c8f2d5e9b1a4c7f0d3e6',
-    canonicalHash:
-      '0x3d8f2a6c1e9b7d4f0a5c8e2b6d1f9a3c7e4b0d8f2a6c5e1b9d7f3a8c4e2',
-  },
-  {
-    id: 4,
-    receiptNumber: 'INV-2026-004',
-    storeName: 'Digital Mart',
-    amount: 475000,
-    receiptDate: '2026-09-20',
-    claimant: '0x3F7aB2d9C1e6A8f4D0b5E7c2A9d3F6',
-    timestamp: '2026-09-20T09:25:31',
-    verdict: 'tampered',
-    tamperScore: 76,
-    status: 'registered',
-    txHash:
-      '0x6f2a8c4e1b7d9f3a5c0e6b2d8f4a1c7e9b3d5f0a6c2e8d4b1f7a3c9e5d2',
-    canonicalHash:
-      '0x6e2a9c4b7d1f8e3a5c0b6d9f2a4e7c1b8d3f5a0c6e9b2d4f7a1c8e5b3',
-  },
-  {
-    id: 5,
-    receiptNumber: 'INV-2026-005',
-    storeName: 'Tech Corner',
-    amount: 890000,
-    receiptDate: '2026-09-18',
-    claimant: '0x8D4cB1a7F3e9C2d6A5b0E8f1D7c4B9',
-    timestamp: '2026-09-18T13:42:17',
-    verdict: 'clean',
-    tamperScore: 15,
-    status: 'registered',
-    txHash:
-      '0x9b3d7f1a5c8e2b6d0f4a9c1e7b3d5f8a2c6e0b4d9f1a7c3e5b8d2f6a0c4',
-    canonicalHash:
-      '0x1a7c4e9b2d6f8a3c5e0b7d1f9a4c6e2b8d3f5a0c7e1b9d4f6a2c8e5b3',
-  },
-  {
-    id: 6,
-    receiptNumber: 'INV-2026-006',
-    storeName: 'Print House',
-    amount: 320000,
-    receiptDate: '2026-09-17',
-    claimant: '0xB7e2C9a4F1d6A8c3E0b5D9f2C7a1E4',
-    timestamp: '2026-09-17T10:16:52',
-    verdict: 'suspicious',
-    tamperScore: 51,
-    status: 'registered',
-    txHash:
-      '0x3e7a1c9f5b2d8e4a0c6f9b1d7e3a5c8f2b6d0e4a9c1f7b3d5e8a2c6f0',
-    canonicalHash:
-      '0x5c8e2a7d1f9b4c6e0a3d7f2b5e8c1a9d4f6b0e2c7a5d9f3b1e8c4a6',
-  },
-]
+const EXPLORER_URL = BOT_CHAIN.blockExplorerUrls[0]
 
 const FILTER_OPTIONS = [
   { value: 'all', label: 'Semua hasil' },
@@ -132,10 +36,87 @@ function Explorer() {
   const [filterOpen, setFilterOpen] = useState(false)
   const [selectedClaim, setSelectedClaim] = useState(null)
 
+  const [claims, setClaims] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+
+  /* =========================================================
+     LOAD — event ClaimRegistered dari contract, enrich via backend
+  ========================================================= */
+
+  useEffect(() => {
+    async function load() {
+      setLoading(true)
+      setError(null)
+
+      try {
+        const contract = await getContractReadOnly()
+        const filter = contract.filters.ClaimRegistered()
+        const events = await contract.queryFilter(filter, 0, 'latest')
+
+        const mapped = await Promise.all(
+          events.map(async (ev) => {
+            const hash = ev.args.hash
+            let storeName = '—'
+            let amount = 0
+            let verdict = 'clean'
+            let receiptNumber = '—'
+            let receiptDate = '-'
+            let canonicalHash = hash
+
+            // Enrich dari backend — gagal enrichment tidak mematikan data on-chain
+            try {
+              const res = await fetch(
+                `${API_BASE}/api/receipts/by-hash?hash=${hash}`
+              )
+              if (res.ok) {
+                const d = await res.json()
+                storeName = d.storeName ?? '—'
+                amount = d.amount ?? 0
+                verdict = d.verdict ?? 'clean'
+                receiptNumber =
+                  d.receiptId != null ? `#${d.receiptId}` : '—'
+                receiptDate = d.createdAt
+                  ? d.createdAt.split('T')[0]
+                  : '-'
+                canonicalHash = d.canonicalHash || hash
+              }
+            } catch (e) {
+              console.warn('Enrichment gagal:', e)
+            }
+
+            return {
+              hash,
+              claimant: ev.args.claimant,
+              timestamp: Number(ev.args.timestamp),
+              receiptNumber,
+              receiptDate,
+              storeName,
+              amount,
+              verdict,
+              txHash: ev.transactionHash,
+              blockNumber: ev.blockNumber,
+              canonicalHash,
+            }
+          })
+        )
+
+        setClaims(mapped.reverse())
+      } catch (err) {
+        setError(err.message)
+        setClaims([])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    load()
+  }, [])
+
   const filteredClaims = useMemo(() => {
     const keyword = search.toLowerCase().trim()
 
-    return DEMO_CLAIMS.filter((claim) => {
+    return claims.filter((claim) => {
       const matchesSearch =
         !keyword ||
         claim.receiptNumber.toLowerCase().includes(keyword) ||
@@ -147,18 +128,18 @@ function Explorer() {
 
       return matchesSearch && matchesVerdict
     })
-  }, [search, verdictFilter])
+  }, [search, verdictFilter, claims])
 
-  const totalAmount = DEMO_CLAIMS.reduce(
+  const totalAmount = claims.reduce(
     (total, claim) => total + claim.amount,
     0
   )
 
   const uniqueWallets = new Set(
-    DEMO_CLAIMS.map((claim) => claim.claimant)
+    claims.map((claim) => claim.claimant)
   ).size
 
-  const reviewCount = DEMO_CLAIMS.filter(
+  const reviewCount = claims.filter(
     (claim) => claim.verdict !== 'clean'
   ).length
 
@@ -199,12 +180,31 @@ function Explorer() {
         </div>
       </div>
 
+      {/* LOADING / ERROR */}
+
+      {loading && (
+        <div className="mb-5 flex items-center gap-3 rounded-2xl border border-white/10 bg-slate-900/25 px-4 py-3 text-sm text-slate-300 backdrop-blur-xl">
+          <Loader2 size={17} className="animate-spin text-blue-300" />
+          Memuat klaim on-chain...
+        </div>
+      )}
+
+      {error && (
+        <div className="mb-5 flex items-start gap-3 rounded-2xl border border-red-300/10 bg-red-400/[0.06] px-4 py-3 text-sm text-red-200 backdrop-blur-xl">
+          <AlertTriangle
+            size={17}
+            className="mt-0.5 shrink-0 text-red-300"
+          />
+          <p>{error}</p>
+        </div>
+      )}
+
       {/* SUMMARY */}
       <div className="mb-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <SummaryCard
           icon={Blocks}
           label="Total Klaim On-chain"
-          value={DEMO_CLAIMS.length}
+          value={claims.length}
           suffix="klaim"
           accent="blue"
         />
@@ -468,7 +468,13 @@ function SummaryCard({
 function TableHead({ children, align = 'left' }) {
   return (
     <th
-      className={`px-5 py-4 text-${align} text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-400/75`}
+      className={`px-5 py-4 ${
+        align === 'right'
+          ? 'text-right'
+          : align === 'center'
+            ? 'text-center'
+            : 'text-left'
+      } text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-400/75`}
     >
       {children}
     </th>
@@ -550,7 +556,7 @@ function ExplorerRow({ claim, onClick }) {
           <CheckCircle2 size={13} className="text-emerald-300/65" />
 
           <span className="text-[10px] text-slate-500">
-            {formatDateTime(claim.timestamp)}
+            {formatDateTime(claim.timestamp * 1000)}
           </span>
         </div>
       </td>
@@ -626,7 +632,7 @@ function ClaimDetailModal({ claim, onClose }) {
             />
             <DetailItem
               label="Dicatat"
-              value={formatDateTime(claim.timestamp)}
+              value={formatDateTime(claim.timestamp * 1000)}
             />
           </div>
 
