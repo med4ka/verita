@@ -132,3 +132,30 @@
   ✅ ALL INTEGRATION TESTS PASS
   ```
 - Spec `.md` tidak diubah; `TEST_PK` tidak dicetak ke progress.
+
+## [2026-09-27T13:05:00+07:00] — Fix check-duplicate false-positive: hanya hitung row registered
+- **Bug:** soft-check selalu `isClaimed=true` untuk nota baru. `POST /api/analyze-receipt` INSERT row `onchain_status='pending'`, lalu `GET /check-duplicate` `WHERE canonical_hash = $1` menemukan row yang baru di-insert itu sendiri (self-match) → padahal belum ada klaim on-chain.
+- **Fix** (`src/routes/receipts.js`): query jadi `WHERE canonical_hash = $1 AND onchain_status = 'registered' ORDER BY created_at ASC LIMIT 1` — row `pending` / `rejected_duplicate` tidak dihitung. Logika response tidak berubah (`false` tanpa row; `true` + claimant + timestamp unix kalau ada). JSDoc Notes ditambah.
+- **Verifikasi lokal** — `node src/index.js` (PID test, `[DB] connected` + `server listening on port 3000`), fixture `tests/fixtures/test-clean.jpg`:
+  - **Step 2 — analyze nota baru:**
+    ```
+    {"receiptId":9,"imageHash":"0x955fbfbc...c30f2795","canonicalHash":"0x320cb091570e0bfd7ee6d0c51b8a926979f5ebdc2316744551193987a2cc7619","tamperScore":0,"verdict":"clean","onchainStatus":"pending"}
+    ```
+  - **Step 3 — `check-duplicate?hash=0x320cb091…cc7619`:**
+    ```
+    {"isClaimed":false}
+    ```
+    ✅ PASS (sebelum fix pasti `true` — row pending sudah ada).
+  - **Step 4 — analyze ulang field SAMA PERSIS (row kedua):**
+    ```
+    {"receiptId":10,...,"canonicalHash":"0x320cb091570e0bfd7ee6d0c51b8a926979f5ebdc2316744551193987a2cc7619","tamperScore":0,"verdict":"clean","onchainStatus":"pending"}
+    ```
+    hash sama persis: `True` (id 10, pending).
+  - **Step 5 — soft-check lagi:**
+    ```
+    {"isClaimed":false}
+    ```
+    ✅ PASS — 2 row pending dengan hash sama tetap `false`.
+  - **Bonus — arah positif:** `POST /receipts/9/confirm-onchain` (`registered`) → `{"ok":true}`; soft-check → `{"isClaimed":true,"claimant":"0xa114fcb61339020d17f6ed5cf711692531746d96","timestamp":1790463508}` ✅ — bukti fix bukan bikin endpoint selalu `false`.
+- **Cleanup:** `DELETE FROM receipts WHERE id IN (9,10)` → `deleted rows: 2` (9=registered, 10=pending), sisa row hash test: `0`; server test dimatikan (port 3000 kosong).
+- Spec `.md` tidak diubah; `.env` tidak dicetak.

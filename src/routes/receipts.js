@@ -59,6 +59,9 @@ router.get('/receipts', validateWalletQuery, async (req, res, next) => {
  *
  * Notes:
  * - Soft-check for UX only; hard-check is registerClaim() on contract (source of truth).
+ * - Only rows with onchain_status = 'registered' count as claimed; rows left 'pending'
+ *   by analyze-receipt or 'rejected_duplicate' are ignored (otherwise every fresh analyze
+ *   would self-match its own pending row).
  */
 // GET /api/receipts/check-duplicate?hash=0x... (R9 soft-check)
 router.get('/receipts/check-duplicate', async (req, res, next) => {
@@ -71,6 +74,7 @@ router.get('/receipts/check-duplicate', async (req, res, next) => {
       `SELECT wallet_address, created_at
        FROM receipts
        WHERE canonical_hash = $1
+         AND onchain_status = 'registered'
        ORDER BY created_at ASC
        LIMIT 1`,
       [String(hash).toLowerCase()]
