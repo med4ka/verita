@@ -20,6 +20,6 @@ export const NETWORKS = {
   },
 };
 
-export const ACTIVE_NETWORK = 'testnet'; // ganti 'mainnet' pas demo
+export const ACTIVE_NETWORK = 'mainnet'; 
 export const BOT_CHAIN = NETWORKS[ACTIVE_NETWORK];
 export const API_BASE = 'https://verita.pxxlspace.cv';
