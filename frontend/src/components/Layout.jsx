@@ -130,8 +130,8 @@ function Layout() {
         <div className="absolute bottom-5 left-5 right-5 border-t border-white/10 pt-4">
           <p className="text-xs text-slate-400">
             <img
-              src="/favicon.svg"
-              alt="Verita"
+              src="/bot_logo.jpeg"
+              alt="BOT Chain"
               className="mr-1.5 inline h-5 w-5"
             />
             Powered by{' '}
