@@ -80,14 +80,14 @@ function Home() {
 
     if (!allowedTypes.includes(selectedFile.type)) {
       setError(
-        'Format file harus JPG atau PNG.'
+        'File must be JPG or PNG.'
       )
       return
     }
 
     if (selectedFile.size > 5 * 1024 * 1024) {
       setError(
-        'Ukuran file maksimal 5 MB.'
+        'File size must be at most 5 MB.'
       )
       return
     }
@@ -142,7 +142,7 @@ function Home() {
   /* =========================================================
      WALLET
 
-     Koneksi via services/wallet (ethers + MetaMask).
+     Connection via services/wallet (ethers + MetaMask).
   ========================================================= */
 
   const handleConnect = async () => {
@@ -153,9 +153,9 @@ function Home() {
       setWallet({ address })
     } catch (err) {
       if (err?.code === 4001) {
-        setError('Kamu menolak koneksi wallet')
+        setError('You rejected the wallet connection')
       } else {
-        setError(err?.message || 'Gagal menghubungkan wallet.')
+        setError(err?.message || 'Failed to connect wallet.')
       }
     }
   }
@@ -163,17 +163,17 @@ function Home() {
   /* =========================================================
      ANALYZE
 
-     Real call POST /api/analyze-receipt + soft-check duplikat.
+     Real call POST /api/analyze-receipt + duplicate soft-check.
   ========================================================= */
 
   const handleAnalyze = async () => {
     if (!wallet) {
-      setError('Connect wallet dulu')
+      setError('Connect your wallet first')
       return
     }
 
     if (!file) {
-      setError('Pilih gambar nota dulu')
+      setError('Select a receipt image first')
       return
     }
 
@@ -183,7 +183,7 @@ function Home() {
       !form.receiptDate ||
       !form.storeName
     ) {
-      setError('Semua field wajib diisi')
+      setError('All fields are required')
       return
     }
 
@@ -210,14 +210,14 @@ function Home() {
 
       if (!res.ok) {
         const err = await res.json().catch(() => ({}))
-        throw new Error(err.error || `Request gagal (${res.status})`)
+        throw new Error(err.error || `Request failed (${res.status})`)
       }
 
       const data = await res.json()
       setAnalysis(data)
       setReceiptId(data.receiptId)
 
-      // Soft-check duplikat — kalau gagal tidak memblokir hasil analisis
+      // Duplicate soft-check — failure does not block analysis results
       try {
         const dupRes = await fetch(
           `${API_BASE}/api/receipts/check-duplicate?hash=${data.canonicalHash}`
@@ -225,10 +225,10 @@ function Home() {
         const dup = await dupRes.json()
         setDuplicate(dup)
       } catch (e) {
-        console.warn('Soft-check gagal:', e)
+        console.warn('Soft-check failed:', e)
       }
     } catch (err) {
-      setError(err.message || 'Analisis gagal')
+      setError(err.message || 'Analysis failed')
     } finally {
       setAnalyzing(false)
     }
@@ -237,7 +237,7 @@ function Home() {
   /* =========================================================
      REGISTER CLAIM
 
-     Sign registerClaim() via MetaMask, lalu confirm-onchain.
+     Sign registerClaim() via MetaMask, then confirm-onchain.
   ========================================================= */
 
   const handleRegisterClaim = async () => {
@@ -276,7 +276,7 @@ function Home() {
         ''
 
       if (msg.includes('Duplicate receipt')) {
-        // Revert "Duplicate receipt" — ambil detail klaim pertama dari contract
+        // Revert "Duplicate receipt" — fetch first claim detail from the contract
         try {
           const readOnly = await getContractReadOnly()
           const [, claimant, timestamp] = await readOnly.checkClaim(
@@ -303,10 +303,10 @@ function Home() {
             }),
           })
         } catch (e) {
-          console.warn('Confirm-onchain gagal:', e)
+          console.warn('Confirm-onchain failed:', e)
         }
       } else {
-        setError(msg || 'Transaksi gagal')
+        setError(msg || 'Transaction failed')
       }
     } finally {
       setRegistering(false)
@@ -350,16 +350,16 @@ function Home() {
 
         <div>
           <p className="mb-1 text-xs font-medium uppercase tracking-[0.18em] text-blue-300/85">
-            Verifikasi Klaim Digital
+            Digital Claim Verification
           </p>
 
           <h1 className="text-3xl font-semibold tracking-tight text-white">
-            Analisis Nota
+            Analyze Receipt
           </h1>
 
           <p className="mt-2 text-sm text-slate-300/85">
-            Periksa indikasi perubahan gambar dan
-            verifikasi klaim sebelum dicatat.
+            Check for image tampering indicators and
+            verify the claim before it is recorded.
           </p>
         </div>
 
@@ -386,7 +386,7 @@ function Home() {
           <div className="text-left">
             <p className="text-xs uppercase tracking-wider text-slate-300">
               {wallet
-                ? 'Wallet Terhubung'
+                ? 'Wallet Connected'
                 : 'Wallet'}
             </p>
 
@@ -448,11 +448,11 @@ function Home() {
 
               <div>
                 <h2 className="text-lg font-semibold text-white">
-                  Upload Nota
+                  Upload Receipt
                 </h2>
 
                 <p className="mt-0.5 text-xs text-slate-400">
-                  Upload gambar nota untuk dianalisis.
+                  Upload a receipt image to analyze.
                 </p>
               </div>
 
@@ -493,15 +493,15 @@ function Home() {
               </div>
 
               <p className="text-sm font-semibold text-slate-200">
-                Klik untuk memilih nota
+                Click to select a receipt
               </p>
 
               <p className="mt-1 text-sm text-slate-400">
-                atau drag & drop file di sini
+                or drag & drop a file here
               </p>
 
               <span className="mt-5 rounded-full border border-white/10 bg-slate-900/30 backdrop-blur-xl px-3 py-1.5 text-xs text-slate-400">
-                JPG / PNG · Maks. 5 MB
+                JPG / PNG · Max. 5 MB
               </span>
 
             </div>
@@ -512,7 +512,7 @@ function Home() {
 
                 <img
                   src={preview}
-                  alt="Preview nota"
+                  alt="Receipt preview"
                   className="max-h-[340px] max-w-full object-contain"
                 />
 
@@ -547,7 +547,7 @@ function Home() {
                 </div>
 
                 <span className="rounded-md bg-emerald-400/10 px-2 py-1 text-xs text-emerald-300">
-                  Siap dianalisis
+                  Ready to analyze
                 </span>
 
               </div>
@@ -562,24 +562,24 @@ function Home() {
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
 
             <InputField
-              label="Nomor Nota"
+              label="Receipt Number"
               name="receiptNumber"
               value={form.receiptNumber}
               onChange={handleChange}
-              placeholder="Contoh: INV-2026-001"
+              placeholder="e.g. INV-2026-001"
             />
 
             <InputField
-              label="Nominal"
+              label="Amount"
               name="amount"
               type="number"
               value={form.amount}
               onChange={handleChange}
-              placeholder="Contoh: 250000"
+              placeholder="e.g. 250000"
             />
 
             <InputField
-              label="Tanggal Nota"
+              label="Receipt Date"
               name="receiptDate"
               type="date"
               value={form.receiptDate}
@@ -587,11 +587,11 @@ function Home() {
             />
 
             <InputField
-              label="Nama Toko"
+              label="Store Name"
               name="storeName"
               value={form.storeName}
               onChange={handleChange}
-              placeholder="Contoh: Toko ABC"
+              placeholder="e.g. Store ABC"
             />
 
           </div>
@@ -612,19 +612,19 @@ function Home() {
                   size={17}
                   className="animate-spin"
                 />
-                Menganalisis Nota...
+                Analyzing Receipt...
               </>
             ) : (
               <>
                 <ScanSearch size={17} />
-                Analisis Nota
+                Analyze Receipt
               </>
             )}
           </button>
 
           <p className="mt-3 text-center text-xs text-slate-400">
-            Analisis menggunakan indikator forensik
-            gambar untuk mendeteksi perubahan.
+            Analysis uses forensic image
+            indicators to detect tampering.
           </p>
 
         </section>
@@ -647,11 +647,11 @@ function Home() {
 
               <div>
                 <h2 className="text-lg font-semibold text-white">
-                  Hasil Analisis
+                  Analysis Results
                 </h2>
 
                 <p className="mt-0.5 text-xs text-slate-400">
-                  Hasil pemeriksaan indikasi perubahan gambar.
+                  Image tampering check results.
                 </p>
               </div>
 
@@ -667,12 +667,12 @@ function Home() {
               </div>
 
               <h3 className="text-sm font-medium text-slate-300">
-                Belum ada hasil analisis
+                No analysis results yet
               </h3>
 
               <p className="mt-2 max-w-sm text-xs leading-5 text-slate-300">
-                Upload nota dan lengkapi datanya
-                untuk menjalankan analisis.
+                Upload a receipt and fill in the details
+                to run the analysis.
               </p>
 
             </div>
@@ -727,9 +727,9 @@ function Home() {
                   </div>
 
                   <div className="mt-2 flex justify-between text-xs text-slate-400">
-                    <span>Bersih</span>
-                    <span>Perlu Ditinjau</span>
-                    <span>Perubahan</span>
+                    <span>Clean</span>
+                    <span>Needs Review</span>
+                    <span>Tampered</span>
                   </div>
 
                 </div>
@@ -805,14 +805,14 @@ function Home() {
                         }`}
                       >
                         {duplicate.isClaimed
-                          ? 'Nota Sudah Pernah Diklaim'
-                          : 'Belum Pernah Diklaim'}
+                          ? 'Receipt Already Claimed'
+                          : 'Never Claimed'}
                       </p>
 
                       <p className="mt-1 text-xs leading-5 text-slate-300">
                         {duplicate.isClaimed
-                          ? 'Nota dengan fingerprint yang sama sudah tercatat sebelumnya.'
-                          : 'Tidak ditemukan klaim dengan fingerprint yang sama.'}
+                          ? 'A receipt with the same fingerprint has been recorded before.'
+                          : 'No claim found with the same fingerprint.'}
                       </p>
 
                       {duplicate.isClaimed &&
@@ -861,17 +861,17 @@ function Home() {
                       size={17}
                       className="animate-spin"
                     />
-                    Menunggu Konfirmasi...
+                    Waiting for Confirmation...
                   </>
                 ) : duplicate?.isClaimed ? (
                   <>
                     <ShieldAlert size={17} />
-                    Nota Sudah Diklaim
+                    Receipt Already Claimed
                   </>
                 ) : (
                   <>
                     <Check size={17} />
-                    Daftarkan ke Blockchain
+                    Register on Blockchain
                   </>
                 )}
               </button>
@@ -907,9 +907,9 @@ function Home() {
               </div>
 
               <p className="text-center text-xs leading-4 text-slate-400">
-                Hasil ELA merupakan indikator forensik
-                gambar dan bukan bukti mutlak adanya
-                manipulasi.
+                ELA results are forensic image
+                indicators, not absolute proof of
+                manipulation.
               </p>
 
             </div>
@@ -945,12 +945,12 @@ function Home() {
               </div>
 
               <h2 className="mt-5 text-xl font-semibold text-white">
-                Klaim Berhasil Dicatat
+                Claim Successfully Registered
               </h2>
 
               <p className="mt-2 text-sm leading-6 text-slate-400">
-                Klaim berhasil diproses dan
-                transaction hash sudah tersedia.
+                Claim has been processed and the
+                transaction hash is now available.
               </p>
 
             </div>
@@ -976,7 +976,7 @@ function Home() {
                 className="btn-primary flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-3 text-xs font-medium text-white transition hover:brightness-110 hover:shadow-[0_12px_40px_rgba(59,130,246,0.4)]!"
                 style={glassButtonStyle}
               >
-                Buka Explorer
+                Open Explorer
                 <ExternalLink size={14} />
               </a>
 
@@ -987,7 +987,7 @@ function Home() {
                 className="flex-1 rounded-xl verita-primary px-4 py-3 text-xs font-semibold text-white transition hover:brightness-110 hover:shadow-[0_12px_40px_rgba(59,130,246,0.4)]!"
                 style={glassButtonStyle}
               >
-                Selesai
+                Done
               </button>
 
             </div>
@@ -1024,12 +1024,12 @@ function Home() {
 
               <div>
                 <h2 className="text-lg font-semibold text-white">
-                  Nota Sudah Pernah Diklaim
+                  Receipt Already Claimed
                 </h2>
 
                 <p className="mt-1 text-xs leading-5 text-slate-300">
-                  Nota dengan fingerprint yang sama
-                  tidak dapat didaftarkan kembali.
+                  A receipt with the same fingerprint
+                  cannot be registered again.
                 </p>
               </div>
 
@@ -1038,7 +1038,7 @@ function Home() {
             <div className="mt-5 rounded-2xl border border-white/10 bg-white/[0.025] p-4">
 
               <p className="text-xs uppercase tracking-wider text-slate-300">
-                Wallet Klaim Pertama
+                First Claim Wallet
               </p>
 
               <p className="mt-2 break-all font-mono text-xs text-slate-300">
@@ -1063,7 +1063,7 @@ function Home() {
               }
               className="mt-5 w-full rounded-xl bg-white/[0.06] px-4 py-3 text-xs font-semibold text-slate-300 transition hover:bg-white/[0.1] hover:text-white"
             >
-              Tutup
+              Close
             </button>
 
           </div>
@@ -1114,9 +1114,9 @@ function InputField({
 function getVerdictConfig(verdict) {
   if (verdict === 'tampered') {
     return {
-      title: 'Terindikasi Perubahan',
+      title: 'Tampered',
       description:
-        'Ditemukan indikasi perubahan pada struktur gambar nota. Hasil ini perlu ditinjau lebih lanjut.',
+        'Tampering indicators found in the receipt image structure. This result needs further review.',
       icon: ShieldAlert,
       iconBg: 'bg-red-400/10',
       iconColor: 'text-red-300',
@@ -1129,9 +1129,9 @@ function getVerdictConfig(verdict) {
 
   if (verdict === 'suspicious') {
     return {
-      title: 'Perlu Ditinjau',
+      title: 'Needs Review',
       description:
-        'Terdapat beberapa indikasi yang perlu diperiksa lebih lanjut sebelum klaim dicatat.',
+        'Several indicators need further review before the claim is recorded.',
       icon: AlertTriangle,
       iconBg: 'bg-amber-400/10',
       iconColor: 'text-amber-300',
@@ -1143,9 +1143,9 @@ function getVerdictConfig(verdict) {
   }
 
   return {
-    title: 'Nota Terindikasi Bersih',
+    title: 'Receipt Shows No Tampering',
     description:
-      'Tidak ditemukan indikasi perubahan yang signifikan berdasarkan analisis gambar.',
+      'No significant tampering indicators found based on image analysis.',
     icon: ShieldCheck,
     iconBg: 'bg-emerald-400/10',
     iconColor: 'text-emerald-300',

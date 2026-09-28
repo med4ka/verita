@@ -24,10 +24,10 @@ import { getContractReadOnly } from '../services/wallet'
 const EXPLORER_URL = BOT_CHAIN.blockExplorerUrls[0]
 
 const FILTER_OPTIONS = [
-  { value: 'all', label: 'Semua hasil' },
-  { value: 'clean', label: 'Bersih' },
-  { value: 'suspicious', label: 'Perlu Ditinjau' },
-  { value: 'tampered', label: 'Terindikasi Perubahan' },
+  { value: 'all', label: 'All results' },
+  { value: 'clean', label: 'Clean' },
+  { value: 'suspicious', label: 'Needs Review' },
+  { value: 'tampered', label: 'Tampered' },
 ]
 
 function Explorer() {
@@ -41,7 +41,7 @@ function Explorer() {
   const [error, setError] = useState(null)
 
   /* =========================================================
-     LOAD — event ClaimRegistered dari contract, enrich via backend
+     LOAD — event ClaimRegistered from contract, enrich via backend
   ========================================================= */
 
   useEffect(() => {
@@ -60,8 +60,8 @@ function Explorer() {
           const fromBlock = Math.max(0, currentBlock - 100000)
           events = await contract.queryFilter(filter, fromBlock, currentBlock)
         } catch (rpcErr) {
-          console.warn('queryFilter gagal:', rpcErr)
-          throw new Error('Gagal memuat data on-chain. Coba lagi nanti.')
+          console.warn('queryFilter failed:', rpcErr)
+          throw new Error('Failed to load on-chain data. Try again later.')
         }
 
         const mapped = await Promise.all(
@@ -74,7 +74,7 @@ function Explorer() {
             let receiptDate = '-'
             let canonicalHash = hash
 
-            // Enrich dari backend — gagal enrichment tidak mematikan data on-chain
+            // Enrich from backend — enrichment failure does not kill on-chain data
             try {
               const res = await fetch(
                 `${API_BASE}/api/receipts/by-hash?hash=${hash}`
@@ -94,8 +94,8 @@ function Explorer() {
                 }
               }
             } catch (e) {
-              // Skip enrichment, tetap tampilkan data dari chain
-              console.warn('Enrichment gagal:', e)
+              // Skip enrichment, keep showing data from chain
+              console.warn('Enrichment failed:', e)
             }
 
             return {
@@ -176,8 +176,8 @@ function Explorer() {
             </h1>
 
             <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300/85">
-              Lihat klaim yang telah tercatat pada jaringan BOT Chain secara
-              transparan.
+              View claims recorded on the BOT Chain network
+              transparently.
             </p>
           </div>
 
@@ -187,7 +187,7 @@ function Explorer() {
             rel="noreferrer"
             className="glass-panel inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-xs font-semibold text-slate-200 transition duration-200 hover:border-blue-300/30 hover:text-white"
           >
-            <span className="relative z-10">Buka BOT Explorer</span>
+            <span className="relative z-10">Open BOT Explorer</span>
             <ExternalLink size={14} className="relative z-10" />
           </a>
         </div>
@@ -198,7 +198,7 @@ function Explorer() {
       {loading && (
         <div className="mb-5 flex items-center gap-3 rounded-2xl border-[3px] border-blue-400/60 border-l-[6px] border-l-blue-500 bg-slate-900/25 px-4 py-3 text-sm text-slate-300 shadow-[0_0_40px_rgba(59,130,246,0.4)] backdrop-blur-xl">
           <Loader2 size={17} className="animate-spin text-blue-300" />
-          Memuat klaim on-chain...
+          Loading on-chain claims...
         </div>
       )}
 
@@ -216,15 +216,15 @@ function Explorer() {
       <div className="mb-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <SummaryCard
           icon={Blocks}
-          label="Total Klaim On-chain"
+          label="Total On-chain Claims"
           value={claims.length}
-          suffix="klaim"
+          suffix="claims"
           accent="blue"
         />
 
         <SummaryCard
           icon={Wallet}
-          label="Wallet Unik"
+          label="Unique Wallets"
           value={uniqueWallets}
           suffix="wallet"
           accent="green"
@@ -232,16 +232,16 @@ function Explorer() {
 
         <SummaryCard
           icon={ReceiptText}
-          label="Total Nilai Klaim"
+          label="Total Claim Value"
           value={formatCurrency(totalAmount)}
           accent="blue"
         />
 
         <SummaryCard
           icon={AlertTriangle}
-          label="Perlu Ditinjau"
+          label="Needs Review"
           value={reviewCount}
-          suffix="klaim"
+          suffix="claims"
           accent="amber"
         />
       </div>
@@ -263,7 +263,7 @@ function Explorer() {
                   </h2>
 
                   <p className="mt-0.5 text-xs text-slate-300/90">
-                    Data klaim yang tercatat pada registry.
+                    Claim data recorded in the registry.
                   </p>
                 </div>
               </div>
@@ -281,7 +281,7 @@ function Explorer() {
                   type="text"
                   value={search}
                   onChange={(event) => setSearch(event.target.value)}
-                  placeholder="Cari nota, toko, wallet..."
+                  placeholder="Search receipt, store, wallet..."
                   className="glass-input h-11 w-full rounded-xl pl-9 pr-4 text-sm text-white outline-none transition placeholder:text-slate-400 focus:border-blue-300/40 sm:w-64"
                 />
               </div>
@@ -341,12 +341,12 @@ function Explorer() {
               <table className="w-full min-w-[980px]">
                 <thead>
                   <tr className="border-b border-white/[0.11] bg-white/[0.035]">
-                    <TableHead>Klaim</TableHead>
-                    <TableHead>Toko</TableHead>
-                    <TableHead align="right">Nominal</TableHead>
+                    <TableHead>Claim</TableHead>
+                    <TableHead>Store</TableHead>
+                    <TableHead align="right">Amount</TableHead>
                     <TableHead>Claimant</TableHead>
-                    <TableHead>Analisis</TableHead>
-                    <TableHead>Dicatat</TableHead>
+                    <TableHead>Analysis</TableHead>
+                    <TableHead>Recorded</TableHead>
                     <TableHead align="right">Detail</TableHead>
                   </tr>
                 </thead>
@@ -365,14 +365,14 @@ function Explorer() {
 
                         <p className="mt-4 text-sm font-medium text-slate-300">
                           {claims.length === 0
-                            ? 'Belum ada klaim on-chain'
-                            : 'Tidak ada klaim ditemukan'}
+                            ? 'No on-chain claims yet'
+                            : 'No claims found'}
                         </p>
 
                         <p className="mt-1 text-xs text-slate-400">
                           {claims.length === 0
-                            ? 'Belum ada klaim yang tercatat di BOT Chain.'
-                            : 'Coba ubah kata pencarian atau filter.'}
+                            ? 'No claims recorded on BOT Chain yet.'
+                            : 'Try changing your search terms or filter.'}
                         </p>
                       </td>
                     </tr>
@@ -393,7 +393,7 @@ function Explorer() {
           {/* FOOTER */}
           <div className="mt-4 flex flex-col gap-2 border-t border-white/[0.06] pt-4 text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between">
             <p>
-              Data ditampilkan berdasarkan catatan klaim pada jaringan.
+              Data is shown based on claim records on the network.
             </p>
 
             <a
@@ -645,14 +645,14 @@ function ClaimDetailModal({ claim, onClose }) {
 
           {/* BASIC INFO */}
           <div className="mt-6 grid grid-cols-2 gap-3">
-            <DetailItem label="Nama Toko" value={claim.storeName} />
-            <DetailItem label="Nominal" value={formatCurrency(claim.amount)} />
+            <DetailItem label="Store Name" value={claim.storeName} />
+            <DetailItem label="Amount" value={formatCurrency(claim.amount)} />
             <DetailItem
-              label="Tanggal Nota"
+              label="Receipt Date"
               value={formatDate(claim.receiptDate)}
             />
             <DetailItem
-              label="Dicatat"
+              label="Recorded"
               value={formatDateTime(claim.timestamp * 1000)}
             />
           </div>
@@ -680,7 +680,7 @@ function ClaimDetailModal({ claim, onClose }) {
           <GlassDetailBox>
             <div className="flex items-center justify-between gap-3">
               <p className="text-xs uppercase tracking-[0.12em] text-slate-300">
-                Hasil Analisis
+                Analysis Results
               </p>
 
               <span
@@ -723,7 +723,7 @@ function ClaimDetailModal({ claim, onClose }) {
 
               <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-300/10 bg-emerald-400/[0.06] px-2.5 py-1 text-xs text-emerald-300">
                 <CheckCircle2 size={11} />
-                Terdaftar
+                Registered
               </span>
             </div>
 
@@ -746,7 +746,7 @@ function ClaimDetailModal({ claim, onClose }) {
                 rel="noreferrer"
                 className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium text-blue-300 transition hover:text-blue-200"
               >
-                Lihat transaksi di BOT Chain
+                View transaction on BOT Chain
                 <ExternalLink size={11} />
               </a>
             </div>
@@ -772,7 +772,7 @@ function ClaimDetailModal({ claim, onClose }) {
             onClick={onClose}
             className="mt-5 w-full rounded-xl border border-white/[0.10] bg-white/[0.055] px-4 py-3 text-xs font-semibold text-slate-300 transition hover:border-white/20 hover:bg-white/[0.09] hover:text-white"
           >
-            Tutup
+            Close
           </button>
         </div>
       </div>
@@ -820,7 +820,7 @@ function CopyButton({ value }) {
       type="button"
       onClick={handleCopy}
       className="shrink-0 rounded-lg p-1.5 text-slate-400 transition hover:bg-white/[0.06] hover:text-slate-200"
-      title="Salin"
+      title="Copy"
     >
       <Copy size={13} />
     </button>
@@ -834,7 +834,7 @@ function CopyButton({ value }) {
 function getVerdictConfig(verdict) {
   if (verdict === 'tampered') {
     return {
-      label: 'Terindikasi Perubahan',
+      label: 'Tampered',
       icon: ShieldAlert,
       badge: 'border-red-300/10 bg-red-400/[0.07] text-red-300',
       bar: 'bg-red-400',
@@ -843,7 +843,7 @@ function getVerdictConfig(verdict) {
 
   if (verdict === 'suspicious') {
     return {
-      label: 'Perlu Ditinjau',
+      label: 'Needs Review',
       icon: AlertTriangle,
       badge: 'border-amber-300/10 bg-amber-400/[0.07] text-amber-300',
       bar: 'bg-amber-400',
@@ -851,7 +851,7 @@ function getVerdictConfig(verdict) {
   }
 
   return {
-    label: 'Bersih',
+    label: 'Clean',
     icon: CheckCircle2,
     badge: 'border-emerald-300/10 bg-emerald-400/[0.07] text-emerald-300',
     bar: 'bg-emerald-400',

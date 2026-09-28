@@ -34,7 +34,7 @@ function History() {
     useState(null)
 
   /* =========================================================
-     LOAD — fetch riwayat klaim milik wallet aktif
+     LOAD — fetch claim history for active wallet
   ========================================================= */
 
   useEffect(() => {
@@ -52,7 +52,7 @@ function History() {
           `${API_BASE}/api/receipts?wallet=${wallet.address.toLowerCase()}`
         )
 
-        if (!res.ok) throw new Error('Gagal load history')
+        if (!res.ok) throw new Error('Failed to load history')
 
         const data = await res.json()
 
@@ -143,7 +143,7 @@ function History() {
       <div className="mb-6">
 
         <p className="mb-1 text-xs font-medium uppercase tracking-[0.18em] text-blue-300/85">
-          Aktivitas Klaim
+          Claim Activity
         </p>
 
         <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
@@ -154,8 +154,8 @@ function History() {
             </h1>
 
             <p className="mt-2 text-sm text-slate-300/85">
-              Lihat seluruh nota yang pernah
-              kamu analisis dan daftarkan.
+              View every receipt you have
+              analyzed and registered.
             </p>
           </div>
 
@@ -169,13 +169,13 @@ function History() {
 
             <div>
               <p className="text-xs uppercase tracking-wider text-slate-300">
-                Wallet Aktif
+                Active Wallet
               </p>
 
               <p className="mt-0.5 font-mono text-xs text-slate-300">
                 {wallet
                   ? shortWallet(wallet.address)
-                  : 'Tidak terhubung'}
+                  : 'Not connected'}
               </p>
             </div>
 
@@ -192,7 +192,7 @@ function History() {
       {loading && (
         <div className="mb-5 flex items-center gap-3 rounded-2xl border-[3px] border-blue-400/60 border-l-[6px] border-l-blue-500 bg-slate-900/25 px-4 py-3 text-sm text-slate-300 shadow-[0_0_40px_rgba(59,130,246,0.4)] backdrop-blur-xl">
           <Loader2 size={17} className="animate-spin text-blue-300" />
-          Memuat history klaim...
+          Loading claim history...
         </div>
       )}
 
@@ -214,14 +214,14 @@ function History() {
 
         <SummaryCard
           icon={ReceiptText}
-          label="Total Klaim"
+          label="Total Claims"
           value={history.length}
-          suffix="nota"
+          suffix="receipts"
         />
 
         <SummaryCard
           icon={Wallet}
-          label="Total Nominal"
+          label="Total Amount"
           value={formatCurrency(
             totalAmount
           )}
@@ -230,17 +230,17 @@ function History() {
 
         <SummaryCard
           icon={CheckCircle2}
-          label="Tercatat On-chain"
+          label="Recorded On-chain"
           value={registeredCount}
-          suffix="klaim"
+          suffix="claims"
           accent="green"
         />
 
         <SummaryCard
           icon={AlertTriangle}
-          label="Perlu Ditinjau"
+          label="Needs Review"
           value={suspiciousCount}
-          suffix="nota"
+          suffix="receipts"
           accent="amber"
         />
 
@@ -258,13 +258,13 @@ function History() {
 
           <div>
             <h2 className="text-base font-semibold text-white">
-              Riwayat Klaim
+              Claim History
             </h2>
 
             <p className="mt-1 text-xs text-slate-400">
               {filteredHistory.length}{' '}
-              dari {history.length}{' '}
-              klaim ditampilkan
+              of {history.length}{' '}
+              claims shown
             </p>
           </div>
 
@@ -287,7 +287,7 @@ function History() {
                     event.target.value
                   )
                 }
-                placeholder="Cari nota atau toko..."
+                placeholder="Search receipt or store..."
                 className="h-10 w-full rounded-xl border border-white/[0.10] bg-white/[0.035] pl-9 pr-4 text-sm text-white outline-none backdrop-blur-xl transition placeholder:text-slate-400 focus:border-blue-400/50 focus:ring-2 focus:ring-blue-400/50 focus:bg-white/[0.055] sm:w-56"
               />
 
@@ -312,19 +312,19 @@ function History() {
                 className="h-10 w-full appearance-none rounded-xl border border-white/[0.10] bg-slate-900/40 pl-9 pr-8 text-sm text-slate-300 outline-none transition backdrop-blur-xl focus:border-blue-400/50 focus:ring-2 focus:ring-blue-400/50 sm:w-44"
               >
                 <option value="all">
-                  Semua hasil
+                  All results
                 </option>
 
                 <option value="clean">
-                  Bersih
+                  Clean
                 </option>
 
                 <option value="suspicious">
-                  Perlu ditinjau
+                  Needs Review
                 </option>
 
                 <option value="tampered">
-                  Terindikasi perubahan
+                  Tampered
                 </option>
               </select>
 
@@ -344,11 +344,11 @@ function History() {
                 className="h-10 w-full appearance-none rounded-xl border border-white/[0.10] bg-slate-900/40 px-4 pr-8 text-sm text-slate-300 outline-none transition backdrop-blur-xl focus:border-blue-400/50 focus:ring-2 focus:ring-blue-400/50 sm:w-40"
               >
                 <option value="all">
-                  Semua status
+                  All statuses
                 </option>
 
                 <option value="registered">
-                  Terdaftar
+                  Registered
                 </option>
 
                 <option value="pending">
@@ -356,7 +356,7 @@ function History() {
                 </option>
 
                 <option value="rejected_duplicate">
-                  Duplikat
+                  Duplicate
                 </option>
               </select>
 
@@ -380,23 +380,23 @@ function History() {
                 <tr className="border-b border-white/[0.08] bg-white/[0.025]">
 
                   <th className="px-5 py-4 text-left text-sm font-medium uppercase tracking-wider text-slate-300">
-                    Nota
+                    Receipt
                   </th>
 
                   <th className="px-5 py-4 text-left text-sm font-medium uppercase tracking-wider text-slate-300">
-                    Tanggal
+                    Date
                   </th>
 
                   <th className="px-5 py-4 text-left text-sm font-medium uppercase tracking-wider text-slate-300">
-                    Toko
+                    Store
                   </th>
 
                   <th className="px-5 py-4 text-right text-sm font-medium uppercase tracking-wider text-slate-300">
-                    Nominal
+                    Amount
                   </th>
 
                   <th className="px-5 py-4 text-left text-sm font-medium uppercase tracking-wider text-slate-300">
-                    Analisis
+                    Analysis
                   </th>
 
                   <th className="px-5 py-4 text-left text-sm font-medium uppercase tracking-wider text-slate-300">
@@ -425,11 +425,11 @@ function History() {
                       </div>
 
                       <p className="mt-4 text-sm font-medium text-slate-400">
-                        Tidak ada klaim ditemukan
+                        No claims found
                       </p>
 
                       <p className="mt-1 text-xs text-slate-400">
-                        Coba ubah pencarian atau
+                        Try changing your search or
                         filter.
                       </p>
 
@@ -564,7 +564,7 @@ function HistoryRow({
       className="group cursor-pointer border-b border-white/[0.055] transition hover:bg-white/[0.035]"
     >
 
-      {/* Nota */}
+      {/* Receipt */}
 
       <td className="px-5 py-4">
 
@@ -588,7 +588,7 @@ function HistoryRow({
 
       </td>
 
-      {/* Tanggal */}
+      {/* Date */}
 
       <td className="px-5 py-4">
 
@@ -607,7 +607,7 @@ function HistoryRow({
 
       </td>
 
-      {/* Toko */}
+      {/* Store */}
 
       <td className="px-5 py-4">
 
@@ -626,7 +626,7 @@ function HistoryRow({
 
       </td>
 
-      {/* Nominal */}
+      {/* Amount */}
 
       <td className="px-5 py-4 text-right">
 
@@ -700,7 +700,7 @@ function BlockchainBadge({
     return (
       <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-300/10 bg-emerald-400/[0.06] px-2.5 py-1 text-xs text-emerald-300">
         <CheckCircle2 size={11} />
-        Terdaftar
+        Registered
       </span>
     )
   }
@@ -709,7 +709,7 @@ function BlockchainBadge({
     return (
       <span className="inline-flex items-center gap-1.5 rounded-full border border-red-300/10 bg-red-400/[0.06] px-2.5 py-1 text-xs text-red-300">
         <ShieldAlert size={11} />
-        Duplikat
+        Duplicate
       </span>
     )
   }
@@ -761,7 +761,7 @@ function DetailModal({
             <div>
 
               <h2 className="text-lg font-semibold text-white">
-                Detail Klaim
+                Claim Detail
               </h2>
 
               <p className="mt-0.5 text-xs text-slate-400">
@@ -786,26 +786,26 @@ function DetailModal({
         <div className="mt-6 grid grid-cols-2 gap-3">
 
           <DetailItem
-            label="Nomor Nota"
+            label="Receipt Number"
             value={
               receipt.receiptNumber
             }
           />
 
             <DetailItem
-              label="Tanggal"
+              label="Date"
               value={formatDate(
                 receipt.date
               )}
             />
 
           <DetailItem
-            label="Nama Toko"
+            label="Store Name"
             value={receipt.storeName}
           />
 
           <DetailItem
-            label="Nominal"
+            label="Amount"
             value={formatCurrency(
               receipt.amount
             )}
@@ -818,7 +818,7 @@ function DetailModal({
         <div className="mt-4 rounded-2xl border border-white/[0.10] bg-white/[0.025] p-4">
 
           <p className="text-xs uppercase tracking-wider text-slate-300">
-            Hasil Analisis
+            Analysis Results
           </p>
 
           <div className="mt-3 flex items-center justify-between">
@@ -852,7 +852,7 @@ function DetailModal({
           <div className="flex items-center justify-between">
 
             <p className="text-xs uppercase tracking-wider text-slate-300">
-              Status Blockchain
+              Blockchain Status
             </p>
 
             <BlockchainBadge
@@ -895,7 +895,7 @@ function DetailModal({
                 rel="noreferrer"
                 className="mt-3 inline-flex items-center gap-1.5 text-xs text-blue-300 transition hover:text-blue-200"
               >
-                Buka di Explorer
+                Open in Explorer
                 <ExternalLink
                   size={11}
                 />
@@ -939,7 +939,7 @@ function DetailModal({
           onClick={onClose}
           className="mt-5 w-full rounded-xl bg-white/[0.06] px-4 py-3 text-xs font-semibold text-slate-300 transition hover:bg-white/[0.1] hover:text-white"
         >
-          Tutup
+          Close
         </button>
 
       </div>
@@ -980,7 +980,7 @@ function getVerdictConfig(
 ) {
   if (verdict === 'tampered') {
     return {
-      label: 'Terindikasi Perubahan',
+      label: 'Tampered',
       icon: ShieldAlert,
       badge:
         'border-red-300/10 bg-red-400/[0.06] text-red-300',
@@ -989,7 +989,7 @@ function getVerdictConfig(
 
   if (verdict === 'suspicious') {
     return {
-      label: 'Perlu Ditinjau',
+      label: 'Needs Review',
       icon: AlertTriangle,
       badge:
         'border-amber-300/10 bg-amber-400/[0.06] text-amber-300',
@@ -997,7 +997,7 @@ function getVerdictConfig(
   }
 
   return {
-    label: 'Bersih',
+    label: 'Clean',
     icon: ShieldCheckIcon,
     badge:
       'border-emerald-300/10 bg-emerald-400/[0.06] text-emerald-300',
